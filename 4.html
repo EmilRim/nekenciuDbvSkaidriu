@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-R Modeliavimo Studijų Vadovas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-btn.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .theory-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .theory-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .theory-card ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .theory-card li {
+            margin-bottom: 8px;
+        }
+        
+        .example-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .example-box strong {
+            color: #2196F3;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .quiz-question h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .task-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .task-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+        }
+        
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .key-term {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 E-R Modeliavimo Studijų Vadovas</h1>
+            <p>Semantinis modeliavimas ir duomenų bazių projektavimas</p>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection(0)">Teorija</button>
+            <button class="nav-btn" onclick="showSection(1)">Ryšiai</button>
+            <button class="nav-btn" onclick="showSection(2)">Transformacija</button>
+            <button class="nav-btn" onclick="showSection(3)">Quiz</button>
+            <button class="nav-btn" onclick="showSection(4)">Užduotys</button>
+        </div>
+        
+        <div class="content">
+            <!-- Section 1: Theory -->
+            <div class="section active">
+                <h2 style="margin-bottom: 20px;">Pagrindinė Teorija</h2>
+                
+                <div class="theory-card">
+                    <h3>Kas yra E-R modelis?</h3>
+                    <p><span class="key-term">Semantinis (E-R) modelis</span> – formalizuotas dalykinės srities aprašas, kurį supranta tiek DB specialistai, tiek dalyko specialistai.</p>
+                    <p style="margin-top: 10px;">Pasiūlytas 1976 m. P. P.-S. Chen (Chen notation)</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Esybė (Entity)</h3>
+                    <ul>
+                        <li><strong>Esybė</strong> – vienatipi objektų klasė su unikaliu tapatumo vardu</li>
+                        <li><strong>Atributai</strong> – esybės savybės:
+                            <ul>
+                                <li><span class="highlight">Vienareikšmiai</span> ir <span class="highlight">daugiareikšmiai</span></li>
+                                <li><span class="highlight">Paprastieji</span> ir <span class="highlight">sudėtiniai</span> (pvz. Adresas = Gatvė + Namas + Butas)</li>
+                                <li><span class="highlight">Išvestiniai</span> – apskaičiuojami pagal kitus atributus</li>
+                            </ul>
+                        </li>
+                        <li><strong>Raktas</strong> – atributai, vienareikšmiškai nusakantys konkretų esybės objektą</li>
+                    </ul>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Esybė <em>Knyga</em> turi atributus: ISBN (raktas), Pavadinimas, Leidykla, Metai, Puslapiai, Autorius (daugiareikšmis)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Stipriosios ir silpnosios esybės</h3>
+                    <ul>
+                        <li><strong>Stipriosios esybės</strong> – egzistuoja nepriklausomai, turi raktą
+                            <div class="example-box">Pvz.: Knyga, Skaitytojas</div>
+                        </li>
+                        <li><strong>Silpnosios esybės</strong> – priklauso nuo kitų esybių, identifikuojamos naudojant pagrindinių esybių raktus + dalinį raktą
+                            <div class="example-box">Pvz.: Knygos skyrius – raktas: ISBN ∪ Skyriaus_Nr</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kategorizavimas</h3>
+                    <ul>
+                        <li><strong>Apibendrinimas</strong> – bendresnes esybės išskyrimas (virštipio sukūrimas)</li>
+                        <li><strong>Specializavimas</strong> – potipių išskyrimas esybėje</li>
+                    </ul>
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong><br>
+                        Skaitytojas (virštipio) → Studentas (Stud_Nr, Programa)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ Dėstytojas (Katedra, Pareigos)<br>
+                        <em>Dėstytojas "is-a" Skaitytojas</em>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 2: Relationships -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Ryšiai (Relationships)</h2>
+                
+                <div class="theory-card">
+                    <h3>Ryšio tipai</h3>
+                    <ul>
+                        <li><strong>1:1</strong> (vienas su vienu) – kiekvienas objektas siejasi su vienu kitos esybės objektu</li>
+                        <li><strong>1:N</strong> (vienas su daug) – vienas objektas gali būti susietas su keliais kitos esybės objektais</li>
+                        <li><strong>N:M</strong> (daug su daug) – objektai gali būti susieti su keliais objektais iš abiejų pusių</li>
+                    </ul>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdžiai iš Bibliotekos sistemos:</strong><br>
+                        • <em>Yra egzempliorius</em> (Knyga ↔ Egzempliorius) – <span class="key-term">1:N</span><br>
+                        • <em>Skaito</em> (Skaitytojas ↔ Egzempliorius) – <span class="key-term">1:N</span><br>
+                        • <em>Priklauso</em> (Knyga ↔ Dalykas) – <span class="key-term">N:M</span>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Ryšio savybės</h3>
+                    <ul>
+                        <li><strong>Besąlyginis (stiprus) ryšys</strong> – dalyvauja visi esybės objektai</li>
+                        <li><strong>Sąlyginis (silpnas) ryšys</strong> – gali dalyvauti ne visi objektai</li>
+                        <li>Ryšiai gali turėti <strong>atributus</strong> (pvz. Paėmimo_data, Grąžinimo_data)</li>
+                    </ul>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Ryšys <em>Yra egzempliorius</em>:<br>
+                        • Besąlyginis iš Egzemplioriaus pusės (kiekvienas egz. priklauso knygai)<br>
+                        • Sąlyginis iš Knygos pusės (ne kiekviena knyga turi egz.)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Rekursyvūs ryšiai</h3>
+                    <p>Ryšys gali sieti esybę su ja pačia. Tarp tų pačių esybių gali būti keli ryšiai.</p>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Skaitytojas ↔ Skaitytojas<br>
+                        • Ryšys <em>Atstovauja</em> – kiekvienam skaitytojui priskiriamas atstovas<br>
+                        • Ryšys <em>Dovanoja</em> – skaitytojai gali dovanoti egzempliorius
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kada ryšį paversti esybe?</h3>
+                    <p>Jei reikia saugoti <span class="highlight">istoriją</span> arba <span class="highlight">kelis įvykius</span>, ryšį reikia modeliuoti kaip esybę.</p>
+                    
+                    <div class="example-box">
+                        <strong>Problema:</strong> Jei ryšys Skaito modeliuojamas N:M su raktu {Egzempliorius_Nr, Skaitytojo_Nr}, negalima įsiminti pakartotinio paėmimo.<br><br>
+                        <strong>Sprendimas:</strong> Sukurti esybę <em>Skaitymas</em> su savu raktu (Nr), kuri saugo visą paėmimų istoriją.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: Transformation -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">E-R modelio transformacija į reliacinį</h2>
+                
+                <div class="theory-card">
+                    <h3>Pagrindinės taisyklės</h3>
+                    <ol style="margin-left: 20px; line-height: 2;">
+                        <li><strong>Esybė E</strong> → lentelė E</li>
+                        <li><strong>Vienareikšmiai atributai</strong> → stulpeliai (išvestiniai netraukiami)</li>
+                        <li><strong>Esybės raktas K</strong> → pirminis raktas</li>
+                        <li><strong>Daugiareikšmis atributas A</strong> → atskira lentelė L(A, K), K – išorinis raktas</li>
+                        <li><strong>Silpnoji esybė</strong> → papildoma pagrindinės esybės raktu</li>
+                    </ol>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Ryšių transformacija</h3>
+                    
+                    <p style="margin-bottom: 15px;"><strong>1:N ryšys:</strong></p>
+                    <div class="example-box">
+                        L1(K, A) ir LN(R, B) + ryšys S(C)<br>
+                        → LN(R, B, K, C), išorinis raktas: LN.K → L1<br><br>
+                        <em>Jei stiprus ryšys, K bus NOT NULL</em>
+                    </div>
+                    
+                    <p style="margin-bottom: 15px; margin-top: 20px;"><strong>1:1 ryšys (simetrinis):</strong></p>
+                    <div class="example-box">
+                        Galima papildyti bet kurią lentelę:<br>
+                        a) L1(K, A, R, C) arba<br>
+                        b) L2(R, B, K, C)<br><br>
+                        <em>Išorinis raktas bus NOT NULL, jei stiprus ryšys</em>
+                    </div>
+                    
+                    <p style="margin-bottom: 15px; margin-top: 20px;"><strong>N:M ryšys:</strong></p>
+                    <div class="example-box">
+                        Sukuriama atskira lentelė:<br>
+                        L1(K, A) ir L2(R, B) + ryšys S(C)<br>
+                        → S(K, R, C), išoriniai raktai: S.K → L1 ir S.R → L2<br><br>
+                        <strong>Raktas:</strong> dažniausiai {K, R}
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Virštipio-potipis</h3>
+                    <p><strong>a) Viena lentelė visoms esybėms:</strong></p>
+                    <ul>
+                        <li>Traukiami visi virštipio ir visų potipių atributai</li>
+                        <li>Dalis atributų bus NULL</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>b) Atskiros lentelės (rekomenduojama):</strong></p>
+                    <ul>
+                        <li>Virštipiui ir kiekvienam potipiui – atskiros lentelės</li>
+                        <li>Potipių lentelėse virštipio raktas yra ir pirminis, ir išorinis raktas</li>
+                    </ul>
+                    
+                    <div class="example-box">
+                        Skaitytojas(Nr, Vardas, Pavardė, ...)<br>
+                        Dėstytojas(Nr, Katedra, Pareigos) – išorinis: Nr → Skaitytojas<br>
+                        Studentas(Nr, Stud_Nr, Programa) – išorinis: Nr → Skaitytojas
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>E-R modelio normalizavimas</h3>
+                    <ul>
+                        <li><strong>1NF:</strong> Esybės turi modeliuoti vieną objektų klasę</li>
+                        <li><strong>2NF:</strong> Šalinti nepirminių atributų priklausomybes nuo sudėtinio rakto dalies</li>
+                        <li><strong>3NF:</strong> Šalinti tranzityvias priklausomybes</li>
+                        <li><strong>BKNF:</strong> Šalinti FP, kurių determinantas nėra raktas</li>
+                        <li><strong>4NF:</strong> Likviduoti netrivialias DRP, kurios nėra FP</li>
+                    </ul>
+                    <p style="margin-top: 10px; color: #28a745;"><strong>✓ Teisingai sudarytas E-R modelis garantuoja BKNF!</strong></p>
+                </div>
+            </div>
+            
+            <!-- Section 4: Quiz -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Tikrink Savo Žinias</h2>
+                <div class="score" id="score">Atsakyta: 0/8 | Teisingai: 0</div>
+                
+                <div class="quiz-question">
+                    <h4>1. Kas yra silpnoji esybė?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Esybė, kuri neturi atributų</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Esybė, kurios objektai priklauso nuo kitų esybių objektų ir identifikuojami naudojant pagrindinių esybių raktus</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Esybė, kuri neturi rakto</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Esybė su daugiareikšmiais atributais</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>2. Kaip transformuojamas 1:N ryšys į reliacinę schemą?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Sukuriama atskira lentelė su abiejų esybių raktais</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) "Daug" pusės lentelė papildoma "vieno" pusės raktu kaip išoriniu raktu</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) "Vieno" pusės lentelė papildoma "daug" pusės raktu</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Abi lentelės sujungiamos į vieną</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>3. Kokiam ryšiui BŪTINA kurti atskirą lentelę?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) 1:1 ryšiui</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) 1:N ryšiui</div>
+                    <div class="option" onclick="checkAnswer(this, true)">c) N:M ryšiui</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Visiems ryšiams</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>4. Kas yra daugiareikšmis atributas?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Atributas, kuris gali būti NULL</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Atributas, kuris vienam esybės objektui gali turėti kelias reikšmes</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Atributas, kuris sudarytas iš kelių paprastųjų atributų</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Atributas, kuris yra išvestinis</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>5. Kaip transformuojamas daugiareikšmis atributas Autorius esybėje Knyga?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Pridedami stulpeliai Autorius1, Autorius2, Autorius3...</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Sukuriama atskira lentelė Autorius(ISBN, Vardas, Pavardė) su išoriniu raktu ISBN</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Autorius įrašomas kaip tekstas su skirtukais</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Autorius netraukiamas į schemą</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>6. Kada ryšį reikia modeliuoti kaip esybę?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Kai tai 1:N ryšys</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Kai reikia saugoti įvykių istoriją arba kelių įvykių duomenis</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Kai ryšys turi atributus</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Visada</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>7. Kas garantuoja BKNF reliacinėje schemoje?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Tik normalizavimas</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Teisingai sudarytas ir transformuotas E-R modelis</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Daug išorinių raktų</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Visi atributai yra NOT NULL</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>8. Kaip transformuojamas virštipio-potipis (rekomenduojamas būdas)?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Viena lentelė su visais atributais</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Virštipiui ir kiekvienam potipiui atskiros lentelės, potipių raktas yra ir pirminis, ir išorinis</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Tik potipių lentelės</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Atskiros lentelės be išorinių raktų</div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+            
+            <!-- Section 5: Tasks -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Praktinės Užduotys</h2>
+                
+                <div class="task-box">
+                    <h4>Užduotis 1: Bibliotekos schema</h4>
+                    <p>Pagal šias taisykles parašykite visas lenteles su pirminiais ir išoriniais raktais:</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Knyga turi ISBN (raktas), Pavadinimą, Leidyklą, Metus</li>
+                        <li>Skaitytojas turi Nr (raktas), Vardą, Pavardę</li>
+                        <li>Ryšys Priklauso tarp Knygos ir Dalyko (N:M)</li>
+                        <li>Dalykas turi Kodą (raktas) ir Pavadinimą</li>
+                    </ul>
+                    <textarea id="task1" placeholder="Rašykite čia savo atsakymą...
+
+Pavyzdys:
+Knyga(ISBN, Pavadinimas, Leidykla, Metai)
+..."></textarea>
+                    <button class="btn" onclick="showHint(1)">Rodyti patarimus</button>
+                    <div id="hint1" style="display:none; margin-top:10px; padding:10px; background:#e7f3ff; border-radius:5px;">
+                        <strong>Patarimai:</strong><br>
+                        • N:M ryšiui reikia atskiros lentelės<br>
+                        • Tos lentelės raktas – abiejų esybių raktų sąjunga<br>
+                        • Nepamirškite nurodyti išorinių raktų!
+                    </div>
+                </div>
+                
+                <div class="task-box">
+                    <h4>Užduotis 2: Ryšio tipo nustatymas</h4>
+                    <p>Nustatykite ryšio tipą (1:1, 1:N ar N:M):</p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Studentas ↔ Universitetas (studijuoja): <input type="text" id="rel1" style="width:100px;"> </li>
+                        <li>Darbuotojas ↔ Projektas (dalyvauja): <input type="text" id="rel2" style="width:100px;"></li>
+                        <li>Asmuo ↔ Pasas (turi): <input type="text" id="rel3" style="width:100px;"></li>
+                    </ul>
+                    <button class="btn" onclick="checkRelationships()">Tikrinti atsakymus</button>
+                    <div id="relFeedback"></div>
+                </div>
+                
+                <div class="task-box">
+                    <h4>Užduotis 3: Transformacija</h4>
+                    <p>Turime esybę Darbuotojas su daugiareikšmiu atributu Telefonas. Kaip ją transformuotumėte į reliacinę schemą?</p>
+                    <textarea id="task3" placeholder="Parašykite lenteles..."></textarea>
+                    <button class="btn" onclick="showHint(3)">Rodyti sprendimą</button>
+                    <div id="hint3" style="display:none; margin-top:10px; padding:10px; background:#d4edda; border-radius:5px;">
+                        <strong>Sprendimas:</strong><br>
+                        Darbuotojas(Nr, Vardas, Pavardė, ...)<br>
+                        Telefonas(Darbuotojo_Nr, Telefonas)<br>
+                        &nbsp;&nbsp;išorinis raktas: Darbuotojo_Nr → Darbuotojas
+                    </div>
+                </div>
+                
+                <div class="task-box">
+                    <h4>Užduotis 4: Silpnoji esybė</h4>
+                    <p>Turime esybes: Pastatas(Nr, Adresas) ir Butas(Buto_Nr, Plotas). Butas yra silpnoji esybė. Parašykite transformuotas lenteles.</p>
+                    <textarea id="task4" placeholder="Parašykite lenteles su visais raktais..."></textarea>
+                    <button class="btn" onclick="showHint(4)">Rodyti sprendimą</button>
+                    <div id="hint4" style="display:none; margin-top:10px; padding:10px; background:#d4edda; border-radius:5px;">
+                        <strong>Sprendimas:</strong><br>
+                        Pastatas(Nr, Adresas)<br>
+                        Butas(Pastato_Nr, Buto_Nr, Plotas)<br>
+                        &nbsp;&nbsp;pirminis raktas: (Pastato_Nr, Buto_Nr)<br>
+                        &nbsp;&nbsp;išorinis raktas: Pastato_Nr → Pastatas
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let answered = 0;
+        let correct = 0;
+        
+        function showSection(index) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach((section, i) => {
+                section.classList.remove('active');
+                if (i === index) {
+                    section.classList.add('active');
+                }
+            });
+            
+            buttons.forEach((button, i) => {
+                button.classList.remove('active');
+                if (i === index) {
+                    button.classList.add('active');
+                }
+            });
+        }
+        
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.option');
+            const feedback = parent.querySelector('.feedback');
+            
+            // Prevent multiple answers
+            if (element.classList.contains('correct') || element.classList.contains('incorrect')) {
+                return;
+            }
+            
+            // Check if already answered
+            let alreadyAnswered = false;
+            options.forEach(opt => {
+                if (opt.classList.contains('correct') || opt.classList.contains('incorrect')) {
+                    alreadyAnswered = true;
+                }
+            });
+            
+            if (alreadyAnswered) return;
+            
+            answered++;
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.textContent = '✓ Teisingai!';
+                correct++;
+            } else {
+                element.classList.add('incorrect');
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = '✗ Neteisingai. Pabandykite dar kartą arba perskaitykite teoriją.';
+                
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            updateScore();
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = `Atsakyta: ${answered}/8 | Teisingai: ${correct}`;
+        }
+        
+        function showHint(num) {
+            const hint = document.getElementById('hint' + num);
+            hint.style.display = hint.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function checkRelationships() {
+            const rel1 = document.getElementById('rel1').value.trim().toUpperCase();
+            const rel2 = document.getElementById('rel2').value.trim().toUpperCase();
+            const rel3 = document.getElementById('rel3').value.trim().toUpperCase();
+            
+            let feedback = '<div style="margin-top:15px; padding:15px; background:#f8f9fa; border-radius:5px;">';
+            
+            if (rel1 === 'N:1' || rel1 === '1:N' || rel1 === 'N-1' || rel1 === '1-N') {
+                feedback += '✓ Studentas ↔ Universitetas: Teisingai! (N:1 arba 1:N)<br>';
+            } else {
+                feedback += '✗ Studentas ↔ Universitetas: Neteisingai. Daug studentų gali studijuoti viename universitete.<br>';
+            }
+            
+            if (rel2 === 'N:M' || rel2 === 'M:N' || rel2 === 'N-M' || rel2 === 'M-N') {
+                feedback += '✓ Darbuotojas ↔ Projektas: Teisingai! (N:M)<br>';
+            } else {
+                feedback += '✗ Darbuotojas ↔ Projektas: Neteisingai. Darbuotojas gali dalyvauti keliuose projektuose, projekte gali dalyvauti keli darbuotojai.<br>';
+            }
+            
+            if (rel3 === '1:1' || rel3 === '1-1') {
+                feedback += '✓ Asmuo ↔ Pasas: Teisingai! (1:1)';
+            } else {
+                feedback += '✗ Asmuo ↔ Pasas: Neteisingai. Vienas asmuo turi vieną pasą.';
+            }
+            
+            feedback += '</div>';
+            document.getElementById('relFeedback').innerHTML = feedback;
+        }
+    </script>
+</body>
+</html>
