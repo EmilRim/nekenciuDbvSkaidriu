@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duomenų bazių projektavimas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideUp 0.6s ease;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            color: #ffd700;
+        }
+
+        .key-concept {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ffd700;
+        }
+
+        .example {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .interactive-demo {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            background: rgba(255, 215, 0, 0.3);
+            font-weight: bold;
+        }
+
+        .warning {
+            background: rgba(255, 100, 100, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ff6464;
+        }
+
+        .tip {
+            background: rgba(100, 255, 100, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #64ff64;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .comparison-item.bad {
+            border-left: 4px solid #ff6464;
+        }
+
+        .comparison-item.good {
+            border-left: 4px solid #64ff64;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .highlight {
+            background: rgba(255, 215, 0, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .nf-ladder {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .nf-level {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .nf-level:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateX(10px);
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Duomenų bazių projektavimas</h1>
+        <div class="subtitle">Nuo pagrindų iki normalinių formų</div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('basics')">Pagrindai</button>
+            <button class="nav-btn" onclick="showSection('algebra')">Reliacinė algebra</button>
+            <button class="nav-btn" onclick="showSection('fp')">Funkcinės priklausomybės</button>
+            <button class="nav-btn" onclick="showSection('anomalies')">Anomalijos</button>
+            <button class="nav-btn" onclick="showSection('2nf')">2NF</button>
+            <button class="nav-btn" onclick="showSection('3nf')">3NF</button>
+            <button class="nav-btn" onclick="showSection('bknf')">BKNF</button>
+            <button class="nav-btn" onclick="showSection('4nf')">4NF</button>
+            <button class="nav-btn" onclick="showSection('summary')">Santrauka</button>
+        </div>
+
+        <!-- BASICS SECTION -->
+        <div class="section active" id="basics">
+            <h2>📚 Pagrindinės sąvokos</h2>
+            
+            <div class="key-concept">
+                <strong>Reliacinis modelis:</strong> Duomenys vaizduojami santykiais (lentelėmis). Santykis – tai kortežų <a₁, a₂,..., aₙ> aibė.
+            </div>
+
+            <h3>Pagrindiniai terminai</h3>
+            <div class="example">
+                <strong>Atributas</strong> – lentelės stulpelis, nusakomas pavadinimu<br><br>
+                <strong>Kortežas</strong> – lentelės eilutė (tvarka neapibrėžta)<br><br>
+                <strong>Domenas</strong> – galimų atributo reikšmių aibė (tarp jų gali būti NULL)
+            </div>
+
+            <h3>Raktai</h3>
+            <div class="key-concept">
+                <strong>Viršraktis</strong> – atributų aibė, vienareikšmiškai apibrėžianti kiekvieną eilutę<br><br>
+                <strong>Raktas</strong> – minimalus viršraktis (pašalinus bet kurį atributą, nebeapibrėžia vienareikšmiškai)<br><br>
+                <strong>Pirminis raktas</strong> – vienas iš kelių galimų raktų, paskelbtas pagrindiniu
+            </div>
+
+            <div class="interactive-demo">
+                <h4>Pavyzdys: Vykdytojai lentelė</h4>
+                <table style="background: white;">
+                    <tr>
+                        <th>Nr</th>
+                        <th>Pavardė</th>
+                        <th>Kvalifikacija</th>
+                        <th>Kategorija</th>
+                    </tr>
+                    <tr>
+                        <td style="background: #ffffcc;">1</td>
+                        <td>Jonaitis</td>
+                        <td>Programuotojas</td>
+                        <td>Senior</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #ffffcc;">2</td>
+                        <td>Petraitis</td>
+                        <td>Analitikas</td>
+                        <td>Junior</td>
+                    </tr>
+                </table>
+                <p style="color: #333; margin-top: 10px;">
+                    <span style="background: #ffffcc; padding: 2px 5px;">{Nr}</span> – pirminis raktas<br>
+                    {Nr, Pavardė} – viršraktis (bet ne raktas)<br>
+                    {Nr, Kategorija} – viršraktis (bet ne raktas)
+                </p>
+            </div>
+
+            <h3>Išorinis raktas</h3>
+            <div class="example">
+                <strong>Išorinis (svetimasis) raktas</strong> – lentelės atributų rinkinys, kuris kitoje ar toje pačioje lentelėje yra pirminis raktas.<br><br>
+                <code>Vykdymas(Projektas, Vykdytojas, Statusas, Valandos)</code><br>
+                Čia <code>Vykdytojas</code> yra išorinis raktas, nukreipiantis į <code>Vykdytojai.Nr</code>
+            </div>
+
+            <h3>Duomenų vientisumo sąlygos</h3>
+            <div class="tip">
+                <strong>Kategorijų vientisumas:</strong> Joks rakto atributas negali būti NULL<br><br>
+                <strong>Nuorodų vientisumas:</strong> Kiekvieno išorinio rakto reikšmė turi būti arba NULL, arba sutapti su pirminio rakto reikšme toje lentelėje, į kurią nurodo
+            </div>
+        </div>
+
+        <!-- RELATIONAL ALGEBRA SECTION -->
+        <div class="section" id="algebra">
+            <h2>🧮 Reliacinė algebra</h2>
+            
+            <div class="key-concept">
+                <strong>Reliacinė algebra</strong> – formali operacijų kalba, kuria iš lentelių galima gauti kitas lenteles, nekeičiant jų turinio.
+            </div>
+
+            <h3>Pagrindinės operacijos</h3>
+            
+            <div class="nf-ladder">
+                <div class="nf-level">
+                    <h3>σ – Išrinkimas (Selection)</h3>
+                    <p>Unarine operacija: išrenka eilutes pagal sąlygą</p>
+                    <div class="formula">σ<sub>A=a</sub>(l) = {e∈l : e(A) = a}</div>
+                    <p style="margin-top: 10px;">Pavyzdys: <code>σ<sub>Nr=1</sub>(Vykdytojai)</code> – išrenka tik vykdytoją su Nr=1</p>
+                </div>
+                
+                <div class="nf-level">
+                    <h3>π – Projekcija (Projection)</h3>
+                    <p>Unarine operacija: išrenka stulpelius</p>
+                    <div class="formula">π<sub>A</sub>(l) = {e(A) : e∈l}</div>
+                    <p style="margin-top: 10px;">Pavyzdys: <code>π<sub>Pavardė,Kvalifikacija</sub>(Vykdytojai)</code> – tik pavardės ir kvalifikacijos</p>
+                </div>
+                
+                <div class="nf-level">
+                    <h3>⋈ – Jungimas (Join)</h3>
+                    <p>Binarine operacija: kombinuoja dvi lenteles</p>
+                    <div class="formula">l₁ ⋈ l₂ = {e : ∃e₁∈l₁, ∃e₂∈l₂, e(R₁∩R₂) sutampa}</div>
+                    <p style="margin-top: 10px;">Jungia lenteles pagal bendrus atributus</p>
+                </div>
+            </div>
+
+            <h3>Operacijų savybės</h3>
+            <div class="example">
+                <strong>Komutyvumas:</strong><br>
+                <code>σ<sub>A=a</sub>(σ<sub>B=b</sub>(l)) = σ<sub>B=b</sub>(σ<sub>A=a</sub>(l)) = σ<sub>A=a,B=b</sub>(l)</code><br><br>
+                
+                <strong>Distributyvumas:</strong><br>
+                <code>σ<sub>A=a</sub>(l₁ ∪ l₂) = σ<sub>A=a</sub>(l₁) ∪ σ<sub>A=a</sub>(l₂)</code><br><br>
+                
+                <strong>Projekcija ir išrinkimas:</strong><br>
+                <code>π<sub>B</sub>(σ<sub>A=a</sub>(l)) = σ<sub>A=a</sub>(π<sub>B</sub>(l))</code> (jei A∈B)
+            </div>
+
+            <h3>SQL atitikmenys</h3>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>Reliacinė algebra</h4>
+                    <code>σ<sub>A=a</sub>(l)</code><br>
+                    <code>π<sub>A,B</sub>(l)</code><br>
+                    <code>l₁ ⋈ l₂</code><br>
+                    <code>l₁ ∪ l₂</code>
+                </div>
+                <div class="comparison-item">
+                    <h4>SQL</h4>
+                    <code>SELECT * FROM l WHERE A=a</code><br>
+                    <code>SELECT DISTINCT A,B FROM l</code><br>
+                    <code>SELECT * FROM l₁, l₂ WHERE...</code><br>
+                    <code>... UNION ...</code>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Heath'o teorema:</strong> Jei L(A,B,C) lentelėje galioja A→B arba A→C, tai lentelę galima suskaidyti į L₁(A,B) ir L₂(A,C) BЕ DUOMENŲ PRARADIMO.
+            </div>
+        </div>
+
+        <!-- FUNCTIONAL DEPENDENCIES SECTION -->
+        <div class="section" id="fp">
+            <h2>🔗 Funkcinės priklausomybės (FP)</h2>
+            
+            <div class="key-concept">
+                <strong>Funkcinė priklausomybė A → B:</strong> Jei dvi eilutės turi vienodas A reikšmes, tai B reikšmės taip pat sutampa.<br><br>
+                Kairiosios dalies atributai vadinami <span class="highlight">determinantu</span>.
+            </div>
+
+            <h3>FP tipai</h3>
+            <div class="example">
+                <strong>Trivialioji FP:</strong> {B₁, B₂,..., Bₘ} ⊆ {A₁, A₂,..., Aₙ}<br>
+                Pavyzdys: <code>AB → A</code> (visada galioja)<br><br>
+                
+                <strong>Netrivialioji FP:</strong> Bent vienas B atributas nepriklauso A aibei<br>
+                Pavyzdys: <code>Nr → Pavardė</code><br><br>
+                
+                <strong>Visiškai netrivialioji FP:</strong> Nė vienas B atributas nepriklauso A aibei<br>
+                Pavyzdys: <code>Projektas → Pavadinimas</code>
+            </div>
+
+            <h3>Armstrong'o aksiomos</h3>
+            <div class="nf-ladder">
+                <div class="nf-level">
+                    <strong>1. Refleksyvumas:</strong> Jei B ⊆ A, tai A → B
+                </div>
+                <div class="nf-level">
+                    <strong>2. Papildymas:</strong> Jei A → B, tai AC → BC
+                </div>
+                <div class="nf-level">
+                    <strong>3. Tranzityvumas:</strong> Jei A → B ir B → C, tai A → C
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Išvestinės taisyklės:</strong><br>
+                <strong>Apsibr ėžtis:</strong> A → A<br>
+                <strong>Dekompozicija:</strong> Jei A → BC, tai A → B ir A → C<br>
+                <strong>Apjungimas:</strong> Jei A → B ir A → C, tai A → BC
+            </div>
+
+            <h3>FP uždarinys (F⁺)</h3>
+            <div class="key-concept">
+                <strong>Uždarinys F⁺</strong> – visų galimų FP aibė, išvedama iš F naudojant Armstrong'o aksiomas.<br><br>
+                <strong>Atributų uždarinys S⁺</strong> – visų atributų aibė, kuri funkciškai priklauso nuo S.
+            </div>
+
+            <div class="interactive-demo">
+                <h4>Pavyzdys: Raktų radimas</h4>
+                <p style="color: #333;">
+                    Duota: R(A, B, C, D) su FP:<br>
+                    1) A → B<br>
+                    2) D → A<br>
+                    3) C → D<br><br>
+                    
+                    <strong>Ar C yra raktas?</strong><br>
+                    Randame C⁺:<br>
+                    • C → C (apsibr.)<br>
+                    • C → D (iš 3)<br>
+                    • C → A (iš D→A)<br>
+                    • C → B (iš A→B)<br>
+                    • C⁺ = {A, B, C, D} = R<br><br>
+                    
+                    <span style="color: green; font-weight: bold;">✓ Taip, C yra raktas!</span>
+                </p>
+            </div>
+
+            <h3>Minimalusis denginys (F<sub>min</sub>)</h3>
+            <div class="warning">
+                <strong>Minimalusis denginys</strong> – minimali FP aibė, ekvivalenti F, kur:<br>
+                a) Kiekvienoje FP dešinėje tik 1 atributas<br>
+                b) Nėra perteklinių FP<br>
+                c) Determinante nėra perteklinių atributų
+            </div>
+
+            <div class="example">
+                <strong>Pavyzdys:</strong><br>
+                F = {AB → CD, A → B, B → C}<br><br>
+                
+                1. Standartizuojame: F = {AB → C, AB → D, A → B, B → C}<br>
+                2. Šaliname perteklį: AB → C pašalinama (nes A → B → C)<br>
+                3. Suprastiname: AB → D tampa A → D<br><br>
+                
+                <strong>F<sub>min</sub> = {A → D, A → B, B → C}</strong>
+            </div>
+        </div>
+
+        <!-- ANOMALIES SECTION -->
+        <div class="section" id="anomalies">
+            <h2>⚠️ Duomenų anomalijos</h2>
+            
+            <div class="key-concept">
+                <strong>Anomalijos</strong> kyla dėl blogos lentelės struktūros ir duomenų pertekliaus. Jos apsunkina duomenų tvarkymą ir gali lemti duomenų praradimą ar prieštaringumą.
+            </div>
+
+            <h3>Blogos struktūros pavyzdys</h3>
+            <div class="interactive-demo">
+                <h4>Projektai_Vykdymas lentelė (bloga!)</h4>
+                <table style="background: white;">
+                    <tr>
+                        <th>Projektas</th>
+                        <th>Pavadinimas</th>
+                        <th>Svarba</th>
+                        <th>Trukmė</th>
+                        <th>Vykdytojas</th>
+                        <th>Valandos</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffcccc;">Studentų apskaita</td>
+                        <td style="background: #ffcccc;">Maža</td>
+                        <td style="background: #ffcccc;">12</td>
+                        <td>1</td>
+                        <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffcccc;">Studentų apskaita</td>
+                        <td style="background: #ffcccc;">Maža</td>
+                        <td style="background: #ffcccc;">12</td>
+                        <td>2</td>
+                        <td>100</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffcccc;">Studentų apskaita</td>
+                        <td style="background: #ffcccc;">Maža</td>
+                        <td style="background: #ffcccc;">12</td>
+                        <td>3</td>
+                        <td>100</td>
+                    </tr>
+                </table>
+                <p style="color: #333; margin-top: 10px;">
+                    <span style="background: #ffcccc; padding: 2px 5px;">Pavadinimas, Svarba, Trukmė</span> kartojasi kiekvienoje eilutėje!
+                </p>
+            </div>
+
+            <h3>1. Atnaujinimo anomalija</h3>
+            <div class="warning">
+                <strong>Problema:</strong> Duomenų prieštaringumas, atnaujinus tik dalį kopijų.<br><br>
+                <strong>Pavyzdys:</strong> Pakeitus projekto 1 trukmę į 15, reikia atnaujinti VISAS eilutes su projektu 1. Jei pamiršime bent vieną – duomenys tampa prieštaringi.
+            </div>
+
+            <h3>2. Šalinimo anomalija</h3>
+            <div class="warning">
+                <strong>Problema:</strong> Nenumatytas reikalingų duomenų praradimas.<br><br>
+                <strong>Pavyzdys:</strong> Jei visi vykdytojai išeina iš projekto Nr. 3, ištrynus jų eilutes prarandame ir visą informaciją apie patį projektą!
+            </div>
+
+            <h3>3. Įvedimo anomalija</h3>
+            <div class="warning">
+                <strong>Problema:</strong> Negalima įvesti duomenų dėl kitų duomenų nebuvimo.<br><br>
+                <strong>Pavyzdys:</strong> Negalime užregistruoti naujo projekto, kol nepaskirtas bent vienas vykdytojas (nes Vykdytojas yra rakto dalis ir negali būti NULL).
+            </div>
+
+            <h3>Sprendimas: Lentelės skaidymas</h3>
+            <div class="comparison">
+                <div class="comparison-item bad">
+                    <h4>❌ Viena lentelė (su anomalijomis)</h4>
+                    <code>Projektai_Vykdymas(Projektas, Pavadinimas, Svarba, Trukmė, Vykdytojas, Valandos)</code>
+                </div>
+                <div class="comparison-item good">
+                    <h4>✅ Dvi lentelės (be anomalijų)</h4>
+                    <code>Projektai(Projektas, Pavadinimas, Svarba, Trukmė)</code><br><br>
+                    <code>Vykdymas(Projektas, Vykdytojas, Valandos)</code>
+                </div>
+            </div>
+
+            <div class="tip">
+                Lentelių skaidymas – lentelės struktūros padalinimas į kelias lenteles, siekiant išvengti duomenų dubliavimo ir anomalijų, nepr arandant duomenų vientisumo.
+            </div>
+        </div>
+
+        <!-- 2NF SECTION -->
+        <div class="section" id="2nf">
+            <h2>Antroji normalinė forma (2NF)</h2>
+            
+            <div class="key-concept">
+                <strong>Pagrindinis principas:</strong> Visi nepirminiai atributai turi funkciniai priklausyti nuo VISO rakto, ne tik nuo jo dalies.
+            </div>
+
+            <h3>Kas yra nepirminis atributas?</h3>
+            <p>Nepirminis atributas – tai atributas, kuris NĖRA jokio lentelės rakto dalis.</p>
+
+            <div class="example">
+                <strong>Pavyzdys:</strong><br>
+                Projektai_Vykdymas(Projektas, Pavadinimas, Svarba, Trukmė, Vykdytojas, Statusas, Valandos)<br><br>
+                <span class="highlight">Raktas:</span> {Projektas, Vykdytojas}<br>
+                <span class="highlight">Pirminiai atributai:</span> Projektas, Vykdytojas<br>
+                <span class="highlight">Nepirminiai atributai:</span> Pavadinimas, Svarba, Trukmė, Statusas, Valandos
+            </div>
+
+            <div class="warning">
+                <strong>Problema:</strong> Pavadinimas, Svarba, Trukmė priklauso tik nuo <code>Projektas</code>, ne nuo viso rakto {Projektas, Vykdytojas}.<br><br>
+                Tai reiškia, kad lentelė NĖRA 2NF.
+            </div>
+
+            <h3>Kaip pataisyti?</h3>
+            <div class="comparison">
+                <div class="comparison-item bad">
+                    <h4>❌ Bloga (nėra 2NF)</h4>
+                    <code>Projektai_Vykdymas(Projektas, Pavadinimas, Svarba, Trukmė, Vykdytojas, Statusas, Valandos)</code>
+                    <p style="margin-top: 10px;">Pavadinimas kartojasi kiekvienoje eilutėje su tuo pačiu projektu.</p>
+                </div>
+                <div class="comparison-item good">
+                    <h4>✅ Gera (2NF)</h4>
+                    <code>Projektai(Projektas, Pavadinimas, Svarba, Trukmė)</code><br><br>
+                    <code>Vykdymas(Projektas, Vykdytojas, Statusas, Valandos)</code>
+                    <p style="margin-top: 10px;">Duomenys nesikartoja, visa informacija saugoma vieną kartą.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Taisyklė:</strong> Jei lentelė turi sudėtinį raktą (iš kelių atributų), patikrink ar visi nepirminiai atributai priklauso nuo VISO rakto. Jei ne – skaido lentelę.
+            </div>
+        </div>
+
+        <!-- 3NF SECTION -->
+        <div class="section" id="3nf">
+            <h2>Trečioji normalinė forma (3NF)</h2>
+            
+            <div class="key-concept">
+                <strong>Pagrindinis principas:</strong> Jokių tranzityvių priklausomybių. Nepirminis atributas negali priklausyti nuo kito nepirminio atributo.
+            </div>
+
+            <h3>Kas yra tranzityvi priklausomybė?</h3>
+            <div class="example">
+                Jei turime lentelę L(A, B, C) ir galioja:<br>
+                <div class="formula">A → B  ir  B → C</div>
+                tai C <strong>tranzityviai</strong> priklauso nuo A.<br><br>
+                Kitaip tariant: A apibr. B, B apibr. C, bet C neapibr. A.
+            </div>
+
+            <div class="interactive-demo">
+                <h4>Realus pavyzdys</h4>
+                <table style="background: white;">
+                    <tr>
+                        <th>Nr</th>
+                        <th>Pavardė</th>
+                        <th>Kvalifikacija</th>
+                        <th>AM</th>
+                        <th>AM_Adresas</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Jonaitis</td>
+                        <td>Programuotojas</td>
+                        <td>VU</td>
+                        <td style="background: #ffcccc;">Universiteto 3, Vilnius</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Petraitis</td>
+                        <td>Analitikas</td>
+                        <td>VU</td>
+                        <td style="background: #ffcccc;">Universiteto 3, Vilnius</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Antanaitis</td>
+                        <td>Testuotojas</td>
+                        <td>VU</td>
+                        <td style="background: #ffcccc;">Universiteto 3, Vilnius</td>
+                    </tr>
+                </table>
+                <p style="color: #333; margin-top: 15px;">
+                    <strong>Problema:</strong> AM_Adresas kartojasi, nes jis priklauso nuo AM, o ne nuo rakto (Nr).<br>
+                    <code>Nr → AM</code> ir <code>AM → AM_Adresas</code> → tranzityvi priklausomybė!
+                </p>
+            </div>
+
+            <h3>Sprendimas</h3>
+            <div class="comparison">
+                <div class="comparison-item bad">
+                    <h4>❌ Nėra 3NF</h4>
+                    <code>Vykdytojai_AM(Nr, Pavardė, Kvalifikacija, AM, AM_Adresas)</code>
+                    <p style="margin-top: 10px;">AM_Adresas tranzityviai priklauso nuo Nr.</p>
+                </div>
+                <div class="comparison-item good">
+                    <h4>✅ Yra 3NF</h4>
+                    <code>Vykdytojai(Nr, Pavardė, Kvalifikacija, AM)</code><br><br>
+                    <code>AM_Adresai(AM, Adresas)</code>
+                    <p style="margin-top: 10px;">Kiekviena lentelė saugo tik jai priklausančią informaciją.</p>
+                </div>
+            </div>
+
+            <div class="key-concept">
+                <strong>Heath'o teorema:</strong><br>
+                Jei lentelėje L(A, B, C) galioja <code>A → B</code> arba <code>A → C</code>, tai lentelę galima suskaidyti į L1(A, B) ir L2(A, C) BE DUOMENŲ PRARADIMO.
+            </div>
+
+            <div class="tip">
+                <strong>Algoritmas 3NF lentelėms sudaryti:</strong><br>
+                1. Rask minimalųjį FP denginį (Fmin)<br>
+                2. Kiekvienai FP <code>X → Y</code> iš Fmin sukurk lentelę su atributais X ir Y<br>
+                3. Jei reikia, pridėk lentelę su pirminiu raktu
+            </div>
+        </div>
+
+        <!-- BKNF SECTION -->
+        <div class="section" id="bknf">
+            <h2>Boiso-Kodo normalinė forma (BKNF)</h2>
+            
+            <div class="key-concept">
+                <strong>Griežčiausias reikalavimas:</strong> Kiekvienoje netrivialioje funkcinėje priklausomybėje <code>X → A</code> determinantas X PRIVALO būti viršraktis.
+            </div>
+
+            <h3>Skirtumas nuo 3NF</h3>
+            <p>3NF leidžia išimtis, kai determinantas nėra viršraktis, bet A yra pirminis atributas. BKNF tokių išimčių neleidžia.</p>
+
+            <div class="example">
+                <strong>Pavyzdys, kur yra 3NF, bet nėra BKNF:</strong><br><br>
+                Projektu_Etapai(Nr, Pavadinimas, Etapas, Pabaiga)<br><br>
+                Raktai: {Nr, Etapas} ir {Pavadinimas, Etapas}<br><br>
+                Galioja:<br>
+                <div class="formula">Nr → Pavadinimas</div>
+                <div class="formula">Pavadinimas → Nr</div>
+                <br>
+                <span class="highlight">Problema:</span> Nei Nr, nei Pavadinimas nėra viršrakčiai (jie tik raktų dalys), bet jie apibr. vienas kitą.
+            </div>
+
+            <div class="interactive-demo">
+                <h4>Duomenų dubliavimas</h4>
+                <table style="background: white;">
+                    <tr>
+                        <th>Nr</th>
+                        <th>Pavadinimas</th>
+                        <th>Etapas</th>
+                        <th>Pabaiga</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffcccc;">Studentų apskaita</td>
+                        <td>1</td>
+                        <td>2001.06.30</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffcccc;">Studentų apskaita</td>
+                        <td>2</td>
+                        <td>2001.12.31</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td style="background: #ffcccc;">Buhalterin. apskaita</td>
+                        <td>1</td>
+                        <td>2001.05.31</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td style="background: #ffcccc;">Buhalterin. apskaita</td>
+                        <td>2</td>
+                        <td>2001.12.31</td>
+                    </tr>
+                </table>
+                <p style="color: #333; margin-top: 10px;">Pavadinimas kartojasi kiekvienam projekto etapui.</p>
+            </div>
+
+            <h3>Skaidymas į BKNF</h3>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>1 variantas</h4>
+                    <code>Nr_Etapai(Nr, Etapas, Pabaiga)</code><br>
+                    <code>Nr_Pavadinimai(Nr, Pavadinimas)</code>
+                </div>
+                <div class="comparison-item">
+                    <h4>2 variantas</h4>
+                    <code>Pavadinimai_Etapai(Pavadinimas, Etapas, Pabaiga)</code><br>
+                    <code>Nr_Pavadinimai(Nr, Pavadinimas)</code>
+                </div>
+            </div>
+
+            <div class="tip">
+                Abu variantai teisingi teoriškai. Praktiškai pirmas geresnis, nes Nr užima mažiau vietos nei Pavadinimas.
+            </div>
+
+            <div class="warning">
+                <strong>Nedalomosios lentelės:</strong> Kartais lentelės NEGALIMA suskaidyti į BKNF išsaugant visas funkcines priklausomybes. Tai reliacinio modelio ribotumas.
+            </div>
+        </div>
+
+        <!-- 4NF SECTION -->
+        <div class="section" id="4nf">
+            <h2>Ketvirtoji normalinė forma (4NF)</h2>
+            
+            <div class="key-concept">
+                <strong>Sprendžia problemą:</strong> Daugiareikšmės priklausomybės (DRP), kai vienas atributas apibr. atributų aibę, nepriklausomai nuo kitų atributų.
+            </div>
+
+            <h3>Kas yra daugiareikšmė priklausomybė?</h3>
+            <div class="example">
+                Žymima: <code>A ↠ B</code><br><br>
+                Reiškia: B reikšmių aibė, atitinkanti bet kurią A reikšmę, NEPRIKLAUSO nuo kitų lentelės atributų reikšmių.
+            </div>
+
+            <div class="interactive-demo">
+                <h4>Klasikinis pavyzdys</h4>
+                <p style="color: #333;">Darbuotojai gali turėti kelias kvalifikacijas ir mokėti kelias kalbas. Tačiau kvalifikacijos ir kalbos yra nepriklausomos viena nuo kitos.</p>
+                
+                <table style="background: white;">
+                    <tr>
+                        <th>Nr</th>
+                        <th>Kvalifikacija</th>
+                        <th>Kalba</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffffcc;">Informatikas</td>
+                        <td style="background: #ccffcc;">Anglų</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffffcc;">Informatikas</td>
+                        <td style="background: #ccffcc;">Vokiečių</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffffcc;">Fizikas</td>
+                        <td style="background: #ccffcc;">Anglų</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="background: #ffffcc;">Fizikas</td>
+                        <td style="background: #ccffcc;">Vokiečių</td>
+                    </tr>
+                </table>
+                <p style="color: #333; margin-top: 15px;">
+                    <strong>Problema:</strong> Dekarto sandauga. Jei darbuotojas Nr. 1 turi 2 kvalifikacijas ir moka 2 kalbas, lentelėje bus 2×2 = 4 eilutės, nors realiai tik 4 faktai (ne 4).
+                </p>
+            </div>
+
+            <div class="key-concept">
+                Galioja: <code>Nr ↠ Kvalifikacija | Kalba</code><br><br>
+                Tai reiškia:<br>
+                <code>Nr ↠ Kvalifikacija</code> ir <code>Nr ↠ Kalba</code>
+            </div>
+
+            <h3>Sprendimas</h3>
+            <div class="comparison">
+                <div class="comparison-item bad">
+                    <h4>❌ Nėra 4NF</h4>
+                    <code>Issilavinimas(Nr, Kvalifikacija, Kalba)</code>
+                    <p style="margin-top: 10px;">Dekarto sandauga kelia duomenų perteklių.</p>
+                </div>
+                <div class="comparison-item good">
+                    <h4>✅ Yra 4NF</h4>
+                    <code>Kvalifikacijos(Nr, Kvalifikacija)</code><br><br>
+                    <code>Kalbos(Nr, Kalba)</code>
+                    <p style="margin-top: 10px;">Kiekviena lentelė saugo tik vieną faktą tipą.</p>
+                </div>
+            </div>
+
+            <div class="tip">
+                <strong>Fagin'o teorema:</strong> Lentelę L(A, B, C) galima gauti sujungiant projekcijas L1(A, B) ir L2(A, C) tada ir tik tada, kai galioja <code>A ↠ B | C</code>
+            </div>
+
+            <div class="warning">
+                Ne visos 4NF lentelės yra BKNF. Pavyzdys: Issilavinimas(Nr, Kvalifikacija, Kalba) yra BKNF (tik trivialios FP), bet nėra 4NF dėl daugiareikšmių priklausomybių.
+            </div>
+        </div>
+
+        <!-- SUMMARY SECTION -->
+        <div class="section" id="summary">
+            <h2>Normalinių formų hierarchija</h2>
+            
+            <div class="nf-ladder">
+                <div class="nf-level">
+                    <h3>1NF - Pirma normalinė forma</h3>
+                    <p>Visi atributų reikšmės yra atomai (ne aibės, ne sąrašai)</p>
+                </div>
+                
+                <div class="nf-level">
+                    <h3>2NF - Antra normalinė forma</h3>
+                    <p>1NF + visi nepirminiai atributai funkciniai priklauso nuo VISO rakto</p>
+                    <p><em>Pašalina dalinius priklausomumus nuo sudėtinio rakto</em></p>
+                </div>
+                
+                <div class="nf-level">
+                    <h3>3NF - Trečia normalinė forma</h3>
+                    <p>2NF + nėra tranzityvių priklausomybių</p>
+                    <p><em>Pašalina nepirminių atributų priklausomybes nuo kitų nepirminių atributų</em></p>
+                </div>
+                
+                <div class="nf-level">
+                    <h3>BKNF - Boiso-Kodo normalinė forma</h3>
+                    <p>1NF + kiekvienoje netrivialioje FP determinantas yra viršraktis</p>
+                    <p><em>Griežčiausia funkcinių priklausomybių forma</em></p>
+                </div>
+                
+                <div class="nf-level">
+                    <h3>4NF - Ketvirta normalinė forma</h3>
+                    <p>BKNF + nėra netrivialių daugiareikšmių priklausomybių</p>
+                    <p><em>Pašalina Dekarto sandaugos problemas</em></p>
+                </div>
+            </div>
+
+            <div class="key-concept" style="margin-top: 40px;">
+                <h3>Ryšys tarp normalinių formų</h3>
+                <div class="formula" style="font-size: 1.3em;">
+                    4NF ⊆ BKNF ⊆ 3NF ⊆ 2NF ⊆ 1NF
+                </div>
+                <p style="margin-top: 15px;">Kiekviena aukštesnė normalinė forma automatiškai tenkina žemesnių formų reikalavimus.</p>
+            </div>
+
+            <div class="comparison" style="margin-top: 40px;">
+                <div class="comparison-item">
+                    <h4>Praktikoje dažniausiai pakanka 3NF</h4>
+                    <p>3NF pašalina daugumą duomenų anomalijų ir yra lengviau pasiekiama nei BKNF ar 4NF.</p>
+                </div>
+                <div class="comparison-item">
+                    <h4>BKNF ir 4NF - idealas</h4>
+                    <p>Naudojamos, kai duomenų vientisumas yra kritinis ir verta papildomo sudėtingumo.</p>
+                </div>
+            </div>
+
+            <div class="tip" style="margin-top: 40px;">
+                <strong>Pagrindinė taisyklė:</strong><br>
+                Normalizuok duomenis iki tokio lygio, kol išnyksta anomalijos, bet ne taip stipriai, kad prarastum funkcines priklausomybes arba per daug apsunkintum užklausas.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
