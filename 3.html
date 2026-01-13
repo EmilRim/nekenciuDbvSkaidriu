@@ -286,11 +286,14 @@
             <button class="nav-btn" onclick="showSection('algebra')">Reliacinė algebra</button>
             <button class="nav-btn" onclick="showSection('fp')">Funkcinės priklausomybės</button>
             <button class="nav-btn" onclick="showSection('anomalies')">Anomalijos</button>
+            <button class="nav-btn" onclick="showSection('1nf')">1NF</button>
             <button class="nav-btn" onclick="showSection('2nf')">2NF</button>
             <button class="nav-btn" onclick="showSection('3nf')">3NF</button>
             <button class="nav-btn" onclick="showSection('bknf')">BKNF</button>
             <button class="nav-btn" onclick="showSection('4nf')">4NF</button>
             <button class="nav-btn" onclick="showSection('summary')">Santrauka</button>
+            <button class="nav-btn" onclick="showSection('practice')">Praktika</button>
+
         </div>
 
         <!-- BASICS SECTION -->
@@ -599,6 +602,59 @@
             </div>
         </div>
 
+
+
+        <!-- Pirma normalinė forma -->
+        <div class="section" id="1nf">
+    <h2>📦 Pirma normalinė forma (1NF)</h2>
+
+    <div class="key-concept">
+        <strong>1NF reikalavimas:</strong>  
+        Visi atributai turi turėti <span class="highlight">atomines</span> reikšmes  
+        (jokių sąrašų, masyvų, pasikartojančių grupių).
+    </div>
+
+    <h3>Kas laikoma pažeidimu?</h3>
+    <div class="example">
+        ❌ <code>Telefonai = {+3706..., +3705...}</code><br>
+        ❌ <code>Kalbos = "Anglų, Vokiečių"</code><br><br>
+        ✔️ Kiekviena reikšmė turi būti viena, nedaloma.
+    </div>
+
+    <h3>Pavyzdys</h3>
+    <div class="comparison">
+        <div class="comparison-item bad">
+            <h4>❌ Nėra 1NF</h4>
+            <code>Darbuotojai(Nr, Vardas, Telefonai)</code><br>
+            Telefonai = {+3706…, +3705…}
+        </div>
+
+        <div class="comparison-item good">
+            <h4>✅ Yra 1NF</h4>
+            <code>Telefonai(Nr, Telefonas)</code>
+        </div>
+    </div>
+
+    <div class="tip">
+        1NF sprendžia <strong>struktūrines</strong> problemas,  
+        bet dar <strong>nefunkcines priklausomybes</strong>.
+    </div>
+
+    <!-- UŽDAVINIAI -->
+    <h3>📝 Užduotys</h3>
+
+    <div class="example">
+        <strong>1.</strong> Ar lentelė <code>Studentai(Nr, Vardas, Kursai)</code>,  
+        kur <code>Kursai = "DB, OS"</code>, yra 1NF?
+        <br><br>
+        <button onclick="toggleAnswer('a1')">Rodyti atsakymą</button>
+        <div id="a1" style="display:none;">
+            ❌ Ne. „Kursai“ nėra atominė reikšmė.
+        </div>
+    </div>
+</div>
+
+
         <!-- 2NF SECTION -->
         <div class="section" id="2nf">
             <h2>Antroji normalinė forma (2NF)</h2>
@@ -641,6 +697,19 @@
             <div class="tip">
                 <strong>Taisyklė:</strong> Jei lentelė turi sudėtinį raktą (iš kelių atributų), patikrink ar visi nepirminiai atributai priklauso nuo VISO rakto. Jei ne – skaido lentelę.
             </div>
+            <h3>📝 Užduotis</h3>
+<div class="example">
+    R(A, B, C), raktas = {A, B}<br>
+    FP: A → C<br><br>
+
+    Ar R yra 2NF?
+    <br><br>
+    <button onclick="toggleAnswer('2nf1')">Rodyti atsakymą</button>
+    <div id="2nf1" style="display:none;">
+        ❌ Ne. C priklauso tik nuo A – dalinė priklausomybė.
+    </div>
+</div>
+
         </div>
 
         <!-- 3NF SECTION -->
@@ -723,6 +792,20 @@
                 2. Kiekvienai FP <code>X → Y</code> iš Fmin sukurk lentelę su atributais X ir Y<br>
                 3. Jei reikia, pridėk lentelę su pirminiu raktu
             </div>
+
+            <div class="example">
+    R(A, B, C)<br>
+    FP: A → B, B → C<br><br>
+
+    Ar R yra 3NF?
+    <br><br>
+    <button onclick="toggleAnswer('3nf1')">Rodyti atsakymą</button>
+    <div id="3nf1" style="display:none;">
+        ❌ Ne. Tranzityvi priklausomybė A → B → C.
+    </div>
+</div>
+
+            
         </div>
 
         <!-- BKNF SECTION -->
@@ -805,6 +888,19 @@
             <div class="warning">
                 <strong>Nedalomosios lentelės:</strong> Kartais lentelės NEGALIMA suskaidyti į BKNF išsaugant visas funkcines priklausomybes. Tai reliacinio modelio ribotumas.
             </div>
+
+            <div class="example">
+    R(A, B, C)<br>
+    FP: A → B, B → A<br><br>
+
+    Ar R yra BCNF?
+    <br><br>
+    <button onclick="toggleAnswer('bcnf1')">Rodyti atsakymą</button>
+    <div id="bcnf1" style="display:none;">
+        ❌ Ne. Nei A, nei B nėra viršraktis.
+    </div>
+</div>
+
         </div>
 
         <!-- 4NF SECTION -->
@@ -853,8 +949,12 @@
                     </tr>
                 </table>
                 <p style="color: #333; margin-top: 15px;">
-                    <strong>Problema:</strong> Dekarto sandauga. Jei darbuotojas Nr. 1 turi 2 kvalifikacijas ir moka 2 kalbas, lentelėje bus 2×2 = 4 eilutės, nors realiai tik 4 faktai (ne 4).
+                    <strong>Problema:</strong> Susidaro <em>Dekarto sandauga</em>.  
+                    Lentelė saugo <strong>dirbtines kombinacijas</strong> tarp kvalifikacijų ir kalbų,  
+                    nors realiai egzistuoja tik atskiri faktai:
+                    „darbuotojas turi kvalifikaciją“ ir „darbuotojas moka kalbą“.
                 </p>
+
             </div>
 
             <div class="key-concept">
@@ -948,6 +1048,25 @@
         </div>
     </div>
 
+    <div class="section" id="practice">
+    <h2>🎯 Mišrios užduotys</h2>
+
+    <div class="example">
+        R(A, B, C, D)<br>
+        FP: A → B, B → C, C → D<br><br>
+
+        1. Rask raktą<br>
+        2. Ar lentelė 3NF?<br><br>
+
+        <button onclick="toggleAnswer('mix1')">Rodyti atsakymą</button>
+        <div id="mix1" style="display:none;">
+            Raktas = {A}<br>
+            ❌ Nėra 3NF (tranzityvumas)
+        </div>
+    </div>
+</div>
+
+
     <script>
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -956,6 +1075,11 @@
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
         }
+            function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
     </script>
+    
 </body>
 </html>
