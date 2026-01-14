@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualiųjų Lentelių Studijų Vadovas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-btn.active {
+            background: white;
+            color: #f5576c;
+            border-bottom: 3px solid #f5576c;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .theory-card {
+            background: #f8f9fa;
+            border-left: 4px solid #f5576c;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .theory-card h3 {
+            color: #f5576c;
+            margin-bottom: 15px;
+        }
+        
+        .theory-card ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .theory-card li {
+            margin-bottom: 8px;
+        }
+        
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        
+        .code-box .keyword {
+            color: #ff79c6;
+            font-weight: bold;
+        }
+        
+        .example-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .example-box strong {
+            color: #2196F3;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #f5576c;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .quiz-question h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            border-color: #f5576c;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .key-term {
+            color: #f5576c;
+            font-weight: 600;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .architecture-diagram {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .level-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 8px;
+            max-width: 400px;
+            font-weight: 600;
+        }
+        
+        .level-box.external {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .level-box.conceptual {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .level-box.internal {
+            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👁️ Virtualiųjų Lentelių Vadovas</h1>
+            <p>Virtualiosios lentelės ir duomenų nepriklausomumo lygiai</p>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection(0)">Samprata</button>
+            <button class="nav-btn" onclick="showSection(1)">Rūšys</button>
+            <button class="nav-btn" onclick="showSection(2)">Atnaujinimas</button>
+            <button class="nav-btn" onclick="showSection(3)">Nepriklausomumas</button>
+            <button class="nav-btn" onclick="showSection(4)">MVL ir Laikinosios</button>
+            <button class="nav-btn" onclick="showSection(5)">Quiz</button>
+        </div>
+        
+        <div class="content">
+            <!-- Section 1: Samprata -->
+            <div class="section active">
+                <h2 style="margin-bottom: 20px;">Virtualiosios Lentelės Samprata</h2>
+                
+                <div class="theory-card">
+                    <h3>Kas yra virtualioji lentelė?</h3>
+                    <p><span class="key-term">Virtualioji lentelė (rodinys, vaizdas, požiūris)</span> – lentelė, kurios duomenys <span class="highlight">nėra tiesiogiai saugomi</span> duomenų bazėje, bet yra <span class="highlight">dinamiškai sužinomi vykdant</span> lentelę apibrėžiančią užklausą.</p>
+                    
+                    <div class="example-box">
+                        <strong>Pagrindinė mintis:</strong> Virtualioji lentelė – tai lyg "langas" į pirminę lentelę. Pro jį matomi duomenys, bet taip pat per jį galima keisti duomenis pirminėje lentelėje.
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Sudarymas</h3>
+                    <div class="code-box">
+<span class="keyword">CREATE VIEW</span> &lt;virtualiosios lentelės vardas&gt;
+  [(&lt;stulpelio vardas&gt;{, &lt;stulpelio vardas&gt;})]
+<span class="keyword">AS</span> &lt;užklausa&gt; 
+[<span class="keyword">WITH CHECK OPTION</span>]
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Naikinimas:</strong></p>
+                    <div class="code-box">
+<span class="keyword">DROP VIEW</span> &lt;virtualiosios lentelės vardas&gt;
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Svarbu:</strong> DBVS nevykdo užklausos CREATE VIEW metu – tik įsimena jos apibrėžimą sisteminiame kataloge. Užklausa vykdoma tik kreipiantis į virtualiąją lentelę.
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Dinamiškumas</h3>
+                    <ul>
+                        <li>Virtualioji lentelė yra <span class="key-term">dinamiška</span></li>
+                        <li>Visi pirminės lentelės pokyčiai atsispindi virtualiojoje lentelėje</li>
+                        <li>Keičiant duomenis virtualiojoje lentelėje, pakeitimai realiai atspindimi pirminėje lentelėje</li>
+                        <li>Virtualioji lentelė neturi savų duomenų – ji tik "langas" į pirminę lentelę</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Pagrindinės naudojimo priežastys</h3>
+                    <ul>
+                        <li><strong>Savita samprata</strong> – galima sudaryti naudotojams savitą sampratą apie DB sandarą</li>
+                        <li><strong>Duomenų slėpimas</strong> – galima paslėpti lentelių eilutes ir stulpelius</li>
+                        <li><strong>Paprastumas</strong> – palengvina naudotojo darbą, nes tampa paprastesnė duomenų struktūra</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Skirtumas nuo WITH užklausų</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>WITH užklausa</th>
+                            <th>Virtualioji lentelė</th>
+                        </tr>
+                        <tr>
+                            <td>Laikinas rezultatas</td>
+                            <td>Išlieka tol, kol nepanaikinama</td>
+                        </tr>
+                        <tr>
+                            <td>Nustoja egzistuoti įvykdžius užklausą</td>
+                            <td>Egzistuoja tol, kol DROP VIEW</td>
+                        </tr>
+                        <tr>
+                            <td>Naudoja tik vienas sakinys</td>
+                            <td>Gali kreiptis daugelis naudotojų</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Section 2: Rūšys -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Virtualiųjų Lentelių Rūšys</h2>
+                
+                <div class="theory-card">
+                    <h3>1. Horizontaliosios virtualiosios lentelės</h3>
+                    <p>Sudaro <span class="key-term">dalis pirminės lentelės eilučių</span> (paslepiamos eilutės)</p>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Kiekvienas projektas – atskira virtualioji lentelė:<br>
+                        <code>CREATE VIEW Vykdymas1 AS SELECT * FROM Vykdymas WHERE Projektas = 1</code>
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Taikymas:</strong> Įstaigose su keletu padalinių – kiekvienas padalinys dirba su savo duomenimis</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>2. Vertikaliosios virtualiosios lentelės</h3>
+                    <p>Sudaro <span class="key-term">visos pirminės lentelės eilutės, bet ne visi stulpeliai</span> (paslepiami stulpeliai)</p>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Nuslepiama kategorija ir išsilavinimas:<br>
+                        <code>CREATE VIEW Bendri_Duomenys AS SELECT Nr, Pavardė, Kvalifikacija FROM Vykdytojai</code>
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Taikymas:</strong> Kai reikia paslėpti konfidencialius duomenis (pvz., atlyginimus)</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>3. Mišriosios virtualiosios lentelės</h3>
+                    <p>Horizontalus ir vertikalus padalijimai kartu (paslepiamos ir eilutės, ir stulpeliai)</p>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Tik informatikai, be numerių:<br>
+                        <code>CREATE VIEW Informatikai AS SELECT Pavardė, Kategorija FROM Vykdytojai WHERE Kvalifikacija = 'Informatikas'</code>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>4. Grupinės virtualiosios lentelės</h3>
+                    <p>Apibrėžime duomenys <span class="key-term">grupuojami</span> (GROUP BY)</p>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Statistika apie projektų vykdymą:<br>
+                        <code>CREATE VIEW Apie_Vykdymą AS SELECT Projektas, SUM(Valandos), AVG(Valandos) FROM Vykdymas GROUP BY Projektas</code>
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Taikymas:</strong> Dažnai pateikiamoms ataskaitoms</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>5. Jungtinės virtualiosios lentelės</h3>
+                    <p>Apibrėžiamos <span class="key-term">jungiamos kelios lentelės</span></p>
+                    
+                    <div class="example-box">
+                        <strong>Taikymas:</strong> Sujungti susijusius duomenis iš kelių lentelių į vieną "rodinį"
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Svarbu:</strong> Virtualioji lentelė gali būti pirmine kitai virtualiajai lentelei – galima kurti virtualias lenteles virš kitų virtualių lentelių.
+                </div>
+            </div>
+            
+            <!-- Section 3: Atnaujinimas -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Virtualiųjų Lentelių Atnaujinimas</h2>
+                
+                <div class="theory-card">
+                    <h3>Kaip veikia atnaujinimas?</h3>
+                    <p>Virtualiosios lentelės duomenų atnaujinimas įgyvendinamas <span class="highlight">atnaujinant pirminės lentelės duomenis</span>.</p>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> UPDATE virtualiojoje lentelėje Informatikai realiai atnaujina duomenis lentelėje Vykdytojai
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Atnaujinamosios virtualiosios lentelės (Updatable Views)</h3>
+                    <p>Virtualią lentelę galima atnaujinti, jei apibrėžianti užklausa tenkina šiuos reikalavimus:</p>
+                    
+                    <ul>
+                        <li>✓ Nėra frazės <span class="key-term">DISTINCT</span></li>
+                        <li>✓ Frazėje FROM yra <span class="key-term">tik viena pirminė lentelė</span> ir ją galima atnaujinti</li>
+                        <li>✓ Kiekvienas stulpelis yra <span class="key-term">paprastas lentelės stulpelis</span>, o ne reiškinys</li>
+                        <li>✓ Sąlygoje <span class="key-term">nėra kitos užklausos</span></li>
+                        <li>✓ <span class="key-term">Nėra duomenų grupavimo</span> (GROUP BY)</li>
+                    </ul>
+                    
+                    <div class="success-box">
+                        <strong>✓ Pagrindinis principas:</strong> Virtualią lentelę galima atnaujinti tik tada, kai kiekvienai virtualiosios lentelės eilutei DBVS gali vienareikšmiškai nustatyti vieną eilutę pirminėje lentelėje.
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Trinamosioms lentelėms (Deletable Views)</h3>
+                    <p>Labai panašūs reikalavimai kaip atnaujinamosioms – galima DELETE, jei tenkina tuos pačius reikalavimus.</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Įteriamosioms lentelėms (Insertable Views)</h3>
+                    <p>Papildomas reikalavimas: virtualiojoje lentelėje turi būti <span class="highlight">visi pirminės lentelės stulpeliai</span>, kurie:</p>
+                    <ul>
+                        <li>Neturi numatytosios (DEFAULT) reikšmės</li>
+                        <li>Privalo įgyti konkrečią reikšmę (NOT NULL)</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>WITH CHECK OPTION</h3>
+                    <p>Uždraudžia įvesti "nematomas" eilutes arba atnaujinti duomenis taip, kad jie taptų "nematomi".</p>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE VIEW</span> Gudručiai
+<span class="keyword">AS SELECT</span> * <span class="keyword">FROM</span> Vykdytojai 
+<span class="keyword">WHERE</span> Kategorija > 2
+<span class="keyword">WITH CHECK OPTION</span>
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Efektas:</strong> DBVS neleis įvesti eilučių, kurių Kategorija ≤ 2, nes jos netenkins paieškos sąlygos ir bus "nematomos"
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Dėmesio:</strong> WITH CHECK OPTION kenkia vykdymo spartai – kiekvieną kartą reikia tikrinti "matomumo" sąlygą
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Atnaujinimo apribojimai</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Virtualiosios lentelės tipas</th>
+                            <th>Atnaujinimas</th>
+                        </tr>
+                        <tr>
+                            <td>Horizontaliosios</td>
+                            <td>✓ Galima (jei atitinka reikalavimus)</td>
+                        </tr>
+                        <tr>
+                            <td>Vertikaliosios</td>
+                            <td>✓ Galima (jei atitinka reikalavimus)</td>
+                        </tr>
+                        <tr>
+                            <td>Mišriosios</td>
+                            <td>✓ Galima (jei atitinka reikalavimus)</td>
+                        </tr>
+                        <tr>
+                            <td>Grupinės</td>
+                            <td>✗ Negalima (nei keisti, nei šalinti, nei įterpti)</td>
+                        </tr>
+                        <tr>
+                            <td>Jungtinės</td>
+                            <td>✗ Dažniausiai negalima (SQL sakiniu galima keisti tik vieną lentelę)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Section 4: Nepriklausomumas -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Duomenų Nepriklausomumo Lygiai</h2>
+                
+                <div class="theory-card">
+                    <h3>Trijų sluoksnių DBS architektūra (ANSI)</h3>
+                    
+                    <div class="architecture-diagram">
+                        <div class="level-box external">
+                            IŠORINIS LYGIS<br>
+                            <small>(individualūs vartotojų rodiniai)</small>
+                        </div>
+                        <div style="font-size: 2em; margin: 10px;">↕️</div>
+                        <div class="level-box conceptual">
+                            KONCEPTUALUSIS LYGIS<br>
+                            <small>(apibendrintas vartotojų rodinys)</small>
+                        </div>
+                        <div style="font-size: 2em; margin: 10px;">↕️</div>
+                        <div class="level-box internal">
+                            VIDINIS LYGIS<br>
+                            <small>(duomenų rodinys fizinėje atmintyje)</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Lygių aprašymas</h3>
+                    
+                    <p><strong>1. Vidinis lygis (Internal Level):</strong></p>
+                    <ul>
+                        <li>Nusakomas <span class="key-term">vidine schema</span></li>
+                        <li>Apibrėžia <span class="highlight">fizinę DB struktūrą</span></li>
+                        <li>Susijęs su duomenų saugojimo fizinėse laikmenose būdais</li>
+                        <li>Interpretuoja abstrakčiais puslapiais, ne konkrečiais įrenginiais</li>
+                        <li>Priskiriami DB indeksai</li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px;"><strong>2. Konceptualusis lygis (Conceptual Level):</strong></p>
+                    <ul>
+                        <li>Nusakomas <span class="key-term">koncepcine schema</span></li>
+                        <li>Apibrėžia <span class="highlight">apibendrintą DB struktūrą</span></li>
+                        <li>Tarpinis lygis</li>
+                        <li>Atsispindi visų duomenų, saugomų fizinėje atmintyje, loginė struktūra</li>
+                        <li>DB reliacinė schema</li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px;"><strong>3. Išorinis lygis (External/View Level):</strong></p>
+                    <ul>
+                        <li>Artimiausias naudotojui lygis</li>
+                        <li>Susijęs su <span class="highlight">duomenų vaizdavimu atskiriems naudotojams</span></li>
+                        <li>Individualizuoti naudotojų DB loginės struktūros vaizdiniai</li>
+                        <li>Čia ir naudojamos <span class="key-term">virtualiosios lentelės</span></li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Duomenų nepriklausomumo tipai</h3>
+                    
+                    <div class="success-box">
+                        <strong>Fizinis duomenų nepriklausomumas:</strong><br>
+                        Nepriklausomumas tarp <span class="key-term">konceptualiojo ir vidinio lygių</span><br><br>
+                        <em>Saugomi duomenys gali keisti fizinę struktūrą ir saugojimo būdą, nekeičiant loginės DB struktūros ir taikomųjų programų.</em>
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 15px;">
+                        <strong>Loginis duomenų nepriklausomumas:</strong><br>
+                        Nepriklausomumas tarp <span class="key-term">išorinio ir konceptualiojo lygių</span><br><br>
+                        <em>Naudotojas ir jo programos nepriklauso nuo loginės DB struktūros pasikeitimų. Užtikrinamas naudotojų veikla netgi pakeitus konceptualųjį duomenų modelį.</em>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Loginio nepriklausomumo užtikrinimas</h3>
+                    <p>Virtualiosios lentelės naudojamos loginiam nepriklausomumui užtikrinti šiais atvejais:</p>
+                    
+                    <p style="margin-top: 15px;"><strong>1. Papildant lentelę nauju stulpeliu:</strong></p>
+                    <div class="code-box" style="font-size: 12px;">
+<span class="keyword">CREATE TABLE</span> L1(R, A);
+<span class="keyword">INSERT INTO</span> L1(R) <span class="keyword">SELECT</span> R <span class="keyword">FROM</span> L;
+<span class="keyword">DROP TABLE</span> L;
+<span class="keyword">CREATE VIEW</span> L(R) <span class="keyword">AS SELECT</span> R <span class="keyword">FROM</span> L1;
+                    </div>
+                    <p style="margin-top: 10px;"><em>Naujasis stulpelis "paslepiamas" virtualiąja lentele</em></p>
+                    
+                    <p style="margin-top: 20px;"><strong>2. Skaidant lentelę į dvi lenteles:</strong></p>
+                    <p>L(A, B, C) → L1(A, B) + L2(B, C)</p>
+                    <p style="margin-top: 10px;"><em>Sukuriama virtualioji lentelė L, jungianti L1 ir L2</em></p>
+                    
+                    <p style="margin-top: 20px;"><strong>3. Apjungiant dvi lenteles į vieną:</strong></p>
+                    <p>L1(A, B) + L2(A, C) → L(A, B, C)</p>
+                    <p style="margin-top: 10px;"><em>Sukuriamos virtualiosios lentelės L1 ir L2, atrenkančios duomenis iš L</em></p>
+                </div>
+            </div>
+            
+            <!-- Section 5: MVL ir Laikinosios -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">MVL ir Laikinosios Lentelės</h2>
+                
+                <div class="theory-card">
+                    <h3>Materializuotos Virtualiosios Lentelės (MVL)</h3>
+                    <p><span class="key-term">Materializuotoji virtualioji lentelė</span> – įsimintas konkretus virtualiąją lentelę apibrėžiančios užklausos rezultatas.</p>
+                    
+                    <div class="example-box">
+                        <strong>Metafora:</strong><br>
+                        • Paprasta virtualioji lentelė = "langas" (žiūrime realiu laiku)<br>
+                        • MVL = "fotografija" (užfiksuotas momentinis vaizdas)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>MVL sudarymas</h3>
+                    <div class="code-box">
+<span class="keyword">CREATE MATERIALIZED VIEW</span> &lt;MVL vardas&gt;
+<span class="keyword">AS</span> &lt;užklausa&gt;
+[<span class="keyword">WITH NO DATA</span>]
+
+<span class="comment">-- Duomenų atnaujinimas:</span>
+<span class="keyword">REFRESH MATERIALIZED VIEW</span> &lt;MVL vardas&gt;
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Svarbu:</strong> Sukuriant MVL, užklausa yra vykdoma ir jos rezultatas įsimenamas (nebent naudojama WITH NO DATA)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kada naudoti MVL?</h3>
+                    <ul>
+                        <li>✓ Kai duomenys virtualiojoje lentelėje <span class="highlight">ieškomi dažnai</span></li>
+                        <li>✓ Kai pirminių lentelių duomenys <span class="highlight">atnaujinami retai</span></li>
+                        <li>✓ Kai užklausa yra sudėtinga ir užtrunka</li>
+                    </ul>
+                    
+                    <div class="success-box">
+                        <strong>Privalumas:</strong> Sparčiau gaunami duomenys – nereikia kaskart vykdyti sudėtingos užklausos
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>Trūkumas:</strong> Duomenys gali pasensti – reikia atnaujinti naudojant REFRESH
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>MVL atnaujinimo strategijos</h3>
+                    <ul>
+                        <li><strong>REFRESH IMMEDIATE</strong> – atnaujinama iš karto, kai pasikeičia pirminės lentelės duomenys</li>
+                        <li><strong>Rankinis atnaujinimas</strong> – naudotojas pats vykdo REFRESH sakinį</li>
+                    </ul>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Pastaba:</strong> Automatinis atnaujinimas reikalauja papildomų kompiuterio darbo sąnaudų
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>MVL vs Paprasta virtualioji lentelė</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Aspektas</th>
+                            <th>Paprasta virtualioji</th>
+                            <th>Materializuotoji</th>
+                        </tr>
+                        <tr>
+                            <td>Duomenų saugojimas</td>
+                            <td>Duomenys nesaugomi</td>
+                            <td>Duomenys įsimenami</td>
+                        </tr>
+                        <tr>
+                            <td>Užklausos vykdymas</td>
+                            <td>Kiekvieną kartą</td>
+                            <td>Tik REFRESH metu</td>
+                        </tr>
+                        <tr>
+                            <td>Duomenų aktualumas</td>
+                            <td>Visada aktualūs</td>
+                            <td>Gali pasensti</td>
+                        </tr>
+                        <tr>
+                            <td>Sparta</td>
+                            <td>Lėčiau (jei sudėtinga)</td>
+                            <td>Greičiau</td>
+                        </tr>
+                        <tr>
+                            <td>Atminties naudojimas</td>
+                            <td>Nereikia</td>
+                            <td>Užima vietą</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Laikinosios lentelės (Temporary Tables)</h3>
+                    <p><span class="key-term">Laikinoji lentelė</span> – lentelė tarpiniams duomenims saugoti ir apdoroti.</p>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE TEMPORARY TABLE</span> &lt;lentelės vardas&gt; (...)
+
+<span class="comment">-- Arba naudojant egzistuojančios lentelės sandarą:</span>
+<span class="keyword">CREATE TEMPORARY TABLE</span> &lt;vardas&gt; 
+  <span class="keyword">LIKE</span> &lt;egzistuojanti lentelė&gt;
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Laikinosių lentelių savybės</h3>
+                    <ul>
+                        <li><strong>GLOBAL</strong> – prieinamos visiems aktyviems naudotojams</li>
+                        <li><strong>LOCAL</strong> – prieinamos tik ją sukūrusiam naudotojui</li>
+                        <li>Automatiškai sunaikinamos pasibaigus darbo su DB sesijai</li>
+                        <li>Galima nurodyti, kas nutinka duomenims pasibaigus transakcijai:
+                            <ul>
+                                <li><strong>ON COMMIT PRESERVE ROWS</strong> – duomenys išlieka</li>
+                                <li><strong>ON COMMIT DELETE ROWS</strong> – duomenys ištrinami</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kada naudoti laikinąsias lenteles?</h3>
+                    <div class="example-box">
+                        <strong>Tipinis scenarijus:</strong> Kai įprastinėje lentelėje yra labai daug eilučių, o reikia intensyviai dirbti tik su maža jų dalimi.<br><br>
+                        <strong>Sprendimas:</strong> Persikelti reikiamus duomenis į laikiną lentelę ir dirbti su ja – taip taupomos darbo sąnaudos.
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Skirtumas nuo MVL:</strong> Laikinojoje lentelėje nėra jokių specialių priemonių duomenų atnaujinimui, pasikeitus pirminės lentelės duomenims
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Palyginimas</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Priemonė</th>
+                            <th>Paskirtis</th>
+                            <th>Gyvavimo laikas</th>
+                        </tr>
+                        <tr>
+                            <td>Virtualioji lentelė</td>
+                            <td>Loginė abstrakcija, duomenų slėpimas</td>
+                            <td>Kol DROP VIEW</td>
+                        </tr>
+                        <tr>
+                            <td>MVL</td>
+                            <td>Spartesnis duomenų gavimas</td>
+                            <td>Kol DROP, bet reikia REFRESH</td>
+                        </tr>
+                        <tr>
+                            <td>Laikinoji lentelė</td>
+                            <td>Tarpiniai skaičiavimai</td>
+                            <td>Iki sesijos pabaigos</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Section 6: Quiz -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Tikrink Savo Žinias</h2>
+                <div class="score" id="score">Atsakyta: 0/8 | Teisingai: 0</div>
+                
+                <div class="quiz-question">
+                    <h4>1. Kas yra virtualioji lentelė?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Lentelė, kurios duomenys saugomi atskirame faile</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Lentelė, kurios duomenys nėra tiesiogiai saugomi DB, bet gaunami vykdant apibrėžiančią užklausą</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Laikina lentelė, kuri sunaikinama po sesijos</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Lentelė su indeksais</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>2. Kokia virtualioji lentelė vadinama horizontaliąja?</h4>
+                    <div class="option" onclick="checkAnswer(this, true)">a) Kuri sudaro dalį pirminės lentelės eilučių</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) Kuri sudaro visas eilutes, bet ne visus stulpelius</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Kuri jungia kelias lenteles</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Kuri turi GROUP BY</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>3. Kurios virtualiosios lentelės NEGALIMA atnaujinti?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Horizontaliosios</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) Vertikaliosios</div>
+                    <div class="option" onclick="checkAnswer(this, true)">c) Grupinės (su GROUP BY)</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Visos galima atnaujinti</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>4. Kam skirta WITH CHECK OPTION?</h4>
+                    <div class="option" onclick="checkAnswer(this, true)">a) Uždrausti įvesti "nematomas" eilutes arba atnaujinti duomenis taip, kad jie taptų "nematomi"</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) Patikrinti duomenų tipus</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Užtikrinti duomenų vientisumą</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Sukurti indeksą</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>5. Kuo skiriasi loginis ir fizinis duomenų nepriklausomumas?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Loginis – tarp vidinio ir konceptualiojo, fizinis – tarp konceptualiojo ir išorinio</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Loginis – tarp išorinio ir konceptualiojo, fizinis – tarp konceptualiojo ir vidinio</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Jie identiški</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Loginis skirtas naudotojams, fizinis – programuotojams</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>6. Kas yra materializuotoji virtualioji lentelė (MVL)?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Virtualioji lentelė su indeksais</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Įsimintas virtualiąją lentelę apibrėžiančios užklausos rezultatas</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Laikina virtualioji lentelė</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Virtualioji lentelė su WITH CHECK OPTION</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>7. Kada tikslinga naudoti MVL vietoj paprastos virtualiosios lentelės?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Kai reikia visada aktualių duomenų</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Kai duomenys ieškomi dažnai, o pirminės lentelės atnaujinamos retai</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Kai lentelė turi mažai duomenų</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Visada geriau naudoti MVL</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>8. Kuo skiriasi laikinoji lentelė nuo materializuotos virtualiosios?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Nieku neskiriasi</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Laikinoji automatiškai sunaikinama po sesijos ir nėra ryšio su pirmine lentele</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Laikinoji yra greitesnė</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) MVL negalima atnaujinti</div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let answered = 0;
+        let correct = 0;
+        
+        function showSection(index) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach((section, i) => {
+                section.classList.remove('active');
+                if (i === index) {
+                    section.classList.add('active');
+                }
+            });
+            
+            buttons.forEach((button, i) => {
+                button.classList.remove('active');
+                if (i === index) {
+                    button.classList.add('active');
+                }
+            });
+        }
+        
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.option');
+            const feedback = parent.querySelector('.feedback');
+            
+            if (element.classList.contains('correct') || element.classList.contains('incorrect')) {
+                return;
+            }
+            
+            let alreadyAnswered = false;
+            options.forEach(opt => {
+                if (opt.classList.contains('correct') || opt.classList.contains('incorrect')) {
+                    alreadyAnswered = true;
+                }
+            });
+            
+            if (alreadyAnswered) return;
+            
+            answered++;
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.textContent = '✓ Teisingai!';
+                correct++;
+            } else {
+                element.classList.add('incorrect');
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = '✗ Neteisingai. Pabandykite dar kartą arba perskaitykite teoriją.';
+                
+                options.forEach(opt => {
+                    if (opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            updateScore();
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = `Atsakyta: ${answered}/8 | Teisingai: ${correct}`;
+        }
+    </script>
+</body>
+</html>

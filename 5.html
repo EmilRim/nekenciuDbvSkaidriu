@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL DDL/DML Studijų Vadovas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-btn.active {
+            background: white;
+            color: #11998e;
+            border-bottom: 3px solid #11998e;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .theory-card {
+            background: #f8f9fa;
+            border-left: 4px solid #11998e;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .theory-card h3 {
+            color: #11998e;
+            margin-bottom: 15px;
+        }
+        
+        .theory-card ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .theory-card li {
+            margin-bottom: 8px;
+        }
+        
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .code-box .keyword {
+            color: #ff79c6;
+            font-weight: bold;
+        }
+        
+        .code-box .string {
+            color: #50fa7b;
+        }
+        
+        .code-box .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+        
+        .example-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .example-box strong {
+            color: #2196F3;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .warning-box strong {
+            color: #856404;
+        }
+        
+        .datatype-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .datatype-table th {
+            background: #11998e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .datatype-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .datatype-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .quiz-question h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            border-color: #11998e;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .key-term {
+            color: #11998e;
+            font-weight: 600;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💾 SQL DDL/DML Studijų Vadovas</h1>
+            <p>Duomenų bazių kūrimas ir manipuliavimas</p>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection(0)">DB Kūrimas</button>
+            <button class="nav-btn" onclick="showSection(1)">Duomenų Tipai</button>
+            <button class="nav-btn" onclick="showSection(2)">CREATE TABLE</button>
+            <button class="nav-btn" onclick="showSection(3)">INSERT/UPDATE/DELETE</button>
+            <button class="nav-btn" onclick="showSection(4)">Quiz</button>
+        </div>
+        
+        <div class="content">
+            <!-- Section 1: DB Creation -->
+            <div class="section active">
+                <h2 style="margin-bottom: 20px;">Duomenų Bazės Kūrimas</h2>
+                
+                <div class="theory-card">
+                    <h3>DB kūrimas ir naikinimas</h3>
+                    <p>Nors SQL standarte nėra sakinio DB kurti, daugelyje DBVS naudojamas:</p>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE DATABASE</span> &lt;DB vardas&gt; [&lt;Vieta&gt;]
+
+<span class="comment">-- Pavyzdys:</span>
+<span class="keyword">CREATE DATABASE</span> Darbai
+                    </div>
+                    
+                    <p style="margin-top: 15px;">DB sunaikinimas:</p>
+                    <div class="code-box">
+<span class="keyword">DROP DATABASE</span> &lt;DB vardas&gt;
+
+<span class="comment">-- Pavyzdys:</span>
+<span class="keyword">DROP DATABASE</span> Darbai
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kas kuria DB?</h3>
+                    <ul>
+                        <li><strong>Naujas bendrąsias DB</strong> – sistemos administratorius</li>
+                        <li><strong>Lokalias DB</strong> – darbo stoties vartotojas-administratorius</li>
+                        <li>DB kuriama kompiuterio atminties srityje ar atskirose bylose</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Svarbu:</strong> DROP DATABASE ištrina visą duomenų bazę su visomis lentelėmis ir duomenimis. Šis veiksmas negrįžtamas!
+                </div>
+            </div>
+            
+            <!-- Section 2: Data Types -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Duomenų Tipai</h2>
+                
+                <div class="theory-card">
+                    <h3>Pagrindinės duomenų rūšys</h3>
+                    <ul>
+                        <li>Simboliniai duomenys</li>
+                        <li>Dvejetainiai duomenys</li>
+                        <li>Loginiai duomenys</li>
+                        <li>Skaičiai</li>
+                        <li>Datos</li>
+                        <li>Laikas</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><span class="key-term">Visi SQL duomenų tipai turi ypatingą reikšmę NULL</span></p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Simboliniai duomenys</h3>
+                    <table class="datatype-table">
+                        <tr>
+                            <th>Tipas</th>
+                            <th>Aprašymas</th>
+                            <th>Max. ilgis</th>
+                        </tr>
+                        <tr>
+                            <td><strong>CHAR(n)</strong><br>CHARACTER(n)</td>
+                            <td>Fiksuoto ilgio simbolių eilutė</td>
+                            <td>254-8000 simbolių</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VARCHAR(n)</strong><br>CHARACTER VARYING(n)</td>
+                            <td>Kintamo ilgio simbolių eilutė</td>
+                            <td>4000-32672 simboliai</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CLOB(n)</strong><br>CHARACTER LARGE OBJECT</td>
+                            <td>Labai ilgos tekstinės eilutės</td>
+                            <td>iki 2-4 GB</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Skaitiniai duomenys</h3>
+                    <table class="datatype-table">
+                        <tr>
+                            <th>Tipas</th>
+                            <th>Aprašymas</th>
+                            <th>Diapazonas / Tikslumas</th>
+                        </tr>
+                        <tr>
+                            <td><strong>SMALLINT</strong></td>
+                            <td>Sveikieji skaičiai (2B)</td>
+                            <td>-32,768 iki 32,767</td>
+                        </tr>
+                        <tr>
+                            <td><strong>INTEGER (INT)</strong></td>
+                            <td>"Dideli" sveikieji (4B)</td>
+                            <td>-2,147,483,648 iki 2,147,483,647</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BIGINT</strong></td>
+                            <td>"Ypač dideli" sveikieji (8B)</td>
+                            <td>Dar didesni skaičiai</td>
+                        </tr>
+                        <tr>
+                            <td><strong>REAL (FLOAT)</strong></td>
+                            <td>Slankiojo kablelio (4B)</td>
+                            <td>6 dešimtainiai skaitmenys</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DOUBLE PRECISION</strong></td>
+                            <td>Dvigubo tikslumo (8B)</td>
+                            <td>15 reikšminių skaitmenų</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DECIMAL(n,m)</strong><br>NUMERIC(n,m)</td>
+                            <td>Dešimtainiai skaičiai<br>n - visų skaitmenų, m - po kablelio</td>
+                            <td>n iki 31-1000</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kiti tipai</h3>
+                    <p><strong>Loginiai:</strong></p>
+                    <ul>
+                        <li><span class="key-term">BOOLEAN</span> – reikšmės: TRUE, FALSE, NULL (unknown)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Dvejetainiai:</strong></p>
+                    <ul>
+                        <li><span class="key-term">BINARY(n)</span> – fiksuoto ilgio</li>
+                        <li><span class="key-term">BIT VARYING(n)</span> – kintamo ilgio</li>
+                        <li><span class="key-term">BLOB(n)</span> – iki 2-4 GB</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Datos ir laikas:</strong></p>
+                    <ul>
+                        <li><span class="key-term">DATE</span> – data (4 baitai)</li>
+                        <li><span class="key-term">TIME</span> – laikas (3-8 baitai)</li>
+                        <li><span class="key-term">TIMESTAMP</span> – data ir laikas (8-10 baitų)</li>
+                    </ul>
+                    
+                    <div class="example-box">
+                        <strong>ISO formato pavyzdžiai:</strong><br>
+                        '2005-01-01' – data<br>
+                        '12:00:00' – laikas<br>
+                        '2005-01-01 12:00:00' – data ir laikas
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Tipų transformavimas (CAST)</h3>
+                    <p>Vieno tipo reikšmės transformavimas į kito tipo reikšmę:</p>
+                    
+                    <div class="code-box">
+<span class="keyword">CAST</span> (&lt;reiškinys&gt; <span class="keyword">AS</span> &lt;duomenų tipas&gt;)
+
+<span class="comment">-- Pavyzdys:</span>
+<span class="keyword">SELECT</span> Pavardė,
+  <span class="keyword">CAST</span>(Kategorija <span class="keyword">AS CHAR</span>(1)) || <span class="string">' kategorija'</span>
+<span class="keyword">FROM</span> Vykdytojai
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Vidurkio konvertavimas į dešimtainį skaičių<br>
+                        <code>CAST(AVG(CAST(Kategorija AS FLOAT)) AS DECIMAL(5,2))</code>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 3: CREATE TABLE -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Lentelių Kūrimas</h2>
+                
+                <div class="theory-card">
+                    <h3>CREATE TABLE sintaksė</h3>
+                    <p>Kuriant lentelę <span class="highlight">būtinai</span> nurodoma:</p>
+                    <ul>
+                        <li>Lentelės vardas (galima patikslinti schemą)</li>
+                        <li>Lentelės stulpelių vardai ir jų tipai</li>
+                    </ul>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE TABLE</span> &lt;lentelės_vardas&gt; (
+  &lt;stulpelio_vardas&gt; &lt;duomenų_tipas&gt; [apribojimai],
+  &lt;stulpelio_vardas&gt; &lt;duomenų_tipas&gt; [apribojimai],
+  ...
+)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Stulpelių apribojimai</h3>
+                    <ul>
+                        <li><span class="key-term">NOT NULL</span> – stulpelis negali gauti NULL reikšmės</li>
+                        <li><span class="key-term">DEFAULT &lt;reikšmė&gt;</span> – numatytoji reikšmė</li>
+                        <li><span class="key-term">PRIMARY KEY</span> – pirminis raktas</li>
+                        <li><span class="key-term">FOREIGN KEY</span> – išorinis raktas</li>
+                        <li><span class="key-term">UNIQUE</span> – unikalios reikšmės</li>
+                        <li><span class="key-term">CHECK</span> – patikrinimo sąlyga</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Pavyzdžiai</h3>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE TABLE</span> Vykdytojai (
+  Nr <span class="keyword">INTEGER NOT NULL</span>,
+  Pavardė <span class="keyword">CHAR</span>(30) <span class="keyword">NOT NULL</span>,
+  Kvalifikacija <span class="keyword">CHAR</span>(16) 
+    <span class="keyword">DEFAULT</span> <span class="string">'Informatikas'</span>,
+  Kategorija <span class="keyword">SMALLINT</span>,
+  Išsilavinimas <span class="keyword">CHAR</span>(10)
+)
+                    </div>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE TABLE</span> Projektai (
+  Nr <span class="keyword">INTEGER NOT NULL</span>,
+  Pavadinimas <span class="keyword">VARCHAR</span>(254) <span class="keyword">NOT NULL</span>,
+  Svarba <span class="keyword">CHAR</span>(10) <span class="keyword">DEFAULT</span> <span class="string">'Vidutinė'</span>,
+  Pradžia <span class="keyword">DATE</span>,
+  Trukmė <span class="keyword">SMALLINT</span>
+)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Lentelės modifikavimas (ALTER TABLE)</h3>
+                    
+                    <p><strong>Stulpelio pridėjimas:</strong></p>
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Vykdytojai 
+  <span class="keyword">ADD</span> Gimtadienis <span class="keyword">DATE</span>
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Stulpelio šalinimas:</strong></p>
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Vykdytojai 
+  <span class="keyword">DROP</span> Gimtadienis
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>DEFAULT keitimas:</strong></p>
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Projektai
+  <span class="keyword">ALTER</span> Svarba <span class="keyword">DROP DEFAULT</span>
+
+<span class="keyword">ALTER TABLE</span> Projektai
+  <span class="keyword">ALTER</span> Svarba <span class="keyword">SET DEFAULT</span> <span class="string">'Didelė'</span>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Lentelės naikinimas</h3>
+                    <div class="code-box">
+<span class="keyword">DROP TABLE</span> &lt;lentelės_vardas&gt;
+
+<span class="comment">-- Pavyzdys:</span>
+<span class="keyword">DROP TABLE</span> Vykdymas
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Dėmesio:</strong> DROP TABLE ištrina lentelę su visais duomenimis!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 4: INSERT/UPDATE/DELETE -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Duomenų Manipuliavimas</h2>
+                
+                <div class="theory-card">
+                    <h3>INSERT - naujų duomenų vedimas</h3>
+                    
+                    <p><strong>1-oji forma (su reikšmių sąrašu):</strong></p>
+                    <div class="code-box">
+<span class="keyword">INSERT INTO</span> &lt;lentelės_vardas&gt;
+  [(&lt;stulpelis&gt; {, &lt;stulpelis&gt;})]
+<span class="keyword">VALUES</span> (&lt;reikšmė&gt; {, &lt;reikšmė&gt;})
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdžiai:</strong>
+                        <div class="code-box">
+<span class="comment">-- Su visais stulpeliais</span>
+<span class="keyword">INSERT INTO</span> Vykdytojai
+<span class="keyword">VALUES</span> (6, <span class="string">'Baltakis'</span>, <span class="string">'Informatikas'</span>, 2, <span class="keyword">NULL</span>)
+
+<span class="comment">-- Su nurodytais stulpeliais</span>
+<span class="keyword">INSERT INTO</span> Vykdytojai (Nr, Pavardė, Kategorija)
+<span class="keyword">VALUES</span> (6, <span class="string">'Baltakis'</span>, 2)
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 20px;"><strong>2-oji forma (su užklausa):</strong></p>
+                    <div class="code-box">
+<span class="keyword">INSERT INTO</span> &lt;lentelės_vardas&gt;
+  [(&lt;stulpelis&gt; {, &lt;stulpelis&gt;})]
+&lt;užklausa&gt;
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Senų projektų perkėlimas į archyvą
+                        <div class="code-box">
+<span class="keyword">INSERT INTO</span> Seni_Projektai
+<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> Projektai
+<span class="keyword">WHERE</span> Pradžia + <span class="keyword">CAST</span>(Trukmė || <span class="string">'MONTHS'</span> <span class="keyword">AS INTERVAL</span>) <
+  CURRENT_DATE - <span class="keyword">INTERVAL</span> <span class="string">'1 YEAR'</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>UPDATE - duomenų atnaujinimas</h3>
+                    
+                    <div class="code-box">
+<span class="keyword">UPDATE</span> &lt;lentelės_vardas&gt;
+<span class="keyword">SET</span> &lt;stulpelis&gt; = &lt;reiškinys&gt;
+    {, &lt;stulpelis&gt; = &lt;reiškinys&gt;}
+[<span class="keyword">WHERE</span> &lt;paieškos_sąlyga&gt;]
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Svarbu:</strong> Atnaujinamos <span class="highlight">visos</span> eilutės, tenkinančios paieškos sąlygą!
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdžiai:</strong>
+                        <div class="code-box">
+<span class="comment">-- Vieno darbuotojo duomenų keitimas</span>
+<span class="keyword">UPDATE</span> Vykdytojai
+<span class="keyword">SET</span> Išsilavinimas = <span class="string">'VU'</span>,
+    Kategorija = Kategorija + 1
+<span class="keyword">WHERE</span> Pavardė = <span class="string">'Gražulytė'</span>
+
+<span class="comment">-- Keitimas su použklausa</span>
+<span class="keyword">UPDATE</span> Projektai 
+<span class="keyword">SET</span> Trukmė = Trukmė * 1.1
+<span class="keyword">WHERE</span> Nr <span class="keyword">IN</span> (
+  <span class="keyword">SELECT</span> Projektas <span class="keyword">FROM</span> Vykdymas, Vykdytojai
+  <span class="keyword">WHERE</span> Vykdytojas = Vykdytojai.Nr 
+    <span class="keyword">AND</span> Pavardė = <span class="string">'Baltakis'</span>
+)
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>DELETE - duomenų šalinimas</h3>
+                    
+                    <div class="code-box">
+<span class="keyword">DELETE FROM</span> &lt;lentelės_vardas&gt;
+[<span class="keyword">WHERE</span> &lt;paieškos_sąlyga&gt;]
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ YPAČ SVARBU:</strong> Šalinamos <span class="highlight">visos</span> eilutės, tenkinančios sąlygą. Be WHERE – šalinamos VISOS lentelės eilutės!
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdžiai:</strong>
+                        <div class="code-box">
+<span class="comment">-- Visų eilučių šalinimas</span>
+<span class="keyword">DELETE FROM</span> Vykdymas
+
+<span class="comment">-- Su sąlyga</span>
+<span class="keyword">DELETE FROM</span> Vykdytojai
+<span class="keyword">WHERE</span> Pavardė = <span class="string">'Baltakis'</span>
+
+<span class="comment">-- Su použklausa</span>
+<span class="keyword">DELETE FROM</span> Vykdymas
+<span class="keyword">WHERE</span> Vykdytojas = (
+  <span class="keyword">SELECT</span> Nr <span class="keyword">FROM</span> Vykdytojai
+  <span class="keyword">WHERE</span> Pavardė = <span class="string">'Baltakis'</span>
+)
+                        </div>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>💡 Patarimas:</strong> Prieš vykdant DELETE, rekomenduojama vykdyti SELECT su ta pačia WHERE sąlyga, kad pamatytumėte, kas bus ištrinta!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 5: Quiz -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Tikrink Savo Žinias</h2>
+                <div class="score" id="score">Atsakyta: 0/6 | Teisingai: 0</div>
+                
+                <div class="quiz-question">
+                    <h4>1. Kuris duomenų tipas tinka saugoti tiksliam pinigų kiekiui?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) FLOAT</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) REAL</div>
+                    <div class="option" onclick="checkAnswer(this, true)">c) DECIMAL(10,2)</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) INTEGER</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>2. Ką reiškia NOT NULL apribojimas?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Stulpelis negali turėti neigiamų reikšmių</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Stulpelis negali gauti NULL reikšmės (būtina įvesti reikšmę)</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Stulpelis turi unikalias reikšmes</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Stulpelis turi numatytąją reikšmę</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>3. Kas nutiks vykdžius: DELETE FROM Vykdytojai (be WHERE)?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) Ištrinama lentelė Vykdytojai</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) Ištrinamos visos eilutės iš lentelės Vykdytojai</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Gauname klaidą</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) Nieko nevyksta</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>4. Kuo skiriasi CHAR(30) nuo VARCHAR(30)?</h4>
+                    <div class="option" onclick="checkAnswer(this, true)">a) CHAR(30) - fiksuoto ilgio, VARCHAR(30) - kintamo ilgio</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) CHAR naudojamas skaičiams, VARCHAR - tekstui</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Jie identiški</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) VARCHAR gali saugoti tik angliškas raides</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>5. Kaip įterpti eilutę su numatytomis reikšmėmis stulpeliams, kurie turi DEFAULT?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) INSERT INTO Vykdytojai VALUES (6, 'Baltakis', NULL, 2, NULL)</div>
+                    <div class="option" onclick="checkAnswer(this, true)">b) INSERT INTO Vykdytojai (Nr, Pavardė, Kategorija) VALUES (6, 'Baltakis', 2)</div>
+                    <div class="option" onclick="checkAnswer(this, false)">c) Negalima naudoti DEFAULT reikšmių INSERT metu</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) INSERT DEFAULT INTO Vykdytojai</div>
+                    <div class="feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h4>6. Kokia komanda naudojama lentelei modifikuoti (pvz., pridėti naują stulpelį)?</h4>
+                    <div class="option" onclick="checkAnswer(this, false)">a) MODIFY TABLE</div>
+                    <div class="option" onclick="checkAnswer(this, false)">b) UPDATE TABLE</div>
+                    <div class="option" onclick="checkAnswer(this, true)">c) ALTER TABLE</div>
+                    <div class="option" onclick="checkAnswer(this, false)">d) CHANGE TABLE</div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let answered = 0;
+        let correct = 0;
+        
+        function showSection(index) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            sections.forEach((section, i) => {
+                section.classList.remove('active');
+                if (i === index) {
+                    section.classList.add('active');
+                }
+            });
+            
+            buttons.forEach((button, i) => {
+                button.classList.remove('active');
+                if (i === index) {
+                    button.classList.add('active');
+                }
+            });
+        }
+        
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.option');
+            const feedback = parent.querySelector('.feedback');
+            
+            // Prevent multiple answers
+            if (element.classList.contains('correct') || element.classList.contains('incorrect')) {
+                return;
+            }
+            
+            // Check if already answered
+            let alreadyAnswered = false;
+            options.forEach(opt => {
+                if (opt.classList.contains('correct') || opt.classList.contains('incorrect')) {
+                    alreadyAnswered = true;
+                }
+            });
+            
+            if (alreadyAnswered) return;
+            
+            answered++;
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.textContent = '✓ Teisingai!';
+                correct++;
+            } else {
+                element.classList.add('incorrect');
+                feedback.className = 'feedback incorrect show';
+                feedback.textContent = '✗ Neteisingai. Pabandykite dar kartą arba perskaitykite teoriją.';
+                
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt.onclick.toString().includes('true')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+            
+            updateScore();
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = `Atsakyta: ${answered}/6 | Teisingai: ${correct}`;
+        }
+    </script>
+</body>
+</html>
