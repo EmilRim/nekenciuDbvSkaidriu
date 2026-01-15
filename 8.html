@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBVS Egzamino Medžiaga</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 3px solid #667eea;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+        
+        .tab-button:hover {
+            background: #e8e8e8;
+            color: #667eea;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #ffe7e7;
+            padding: 15px;
+            border-left: 4px solid #f44336;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .key-points {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .key-points h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 DBVS Egzamino Medžiaga</h1>
+            <p>Duomenų bazių valdymo sistemos - Pagrindinės temos</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'embedded-sql')">Įterptinis SQL</button>
+            <button class="tab-button" onclick="openTab(event, 'cursors')">Žymekliai</button>
+            <button class="tab-button" onclick="openTab(event, 'dynamic-sql')">Dinaminis SQL</button>
+            <button class="tab-button" onclick="openTab(event, 'jdbc')">JDBC</button>
+            <button class="tab-button" onclick="openTab(event, 'sql-injection')">SQL Injekcijos</button>
+        </div>
+        
+        <div id="embedded-sql" class="tab-content active">
+            <div class="section">
+                <h2>Įterptinis SQL (Embedded SQL)</h2>
+                
+                <div class="key-points">
+                    <h4>Pagrindinės sąvokos:</h4>
+                    <ul>
+                        <li><strong>Host language</strong> - pagrindinė programavimo kalba (C/C++, COBOL, Java)</li>
+                        <li><strong>Host variable</strong> - bazinis kintamasis iš programos, naudojamas SQL sakiniuose</li>
+                        <li><strong>Prekompiliatorius</strong> - apdoroja SQL sakinius prieš kompiliavimą</li>
+                    </ul>
+                </div>
+                
+                <h3>SQL sakinių žymėjimas</h3>
+                <div class="code-block">EXEC SQL &lt;SQL sakinys&gt; ;</div>
+                
+                <h3>Bazinių kintamųjų deklaravimas</h3>
+                <div class="code-block">EXEC SQL BEGIN DECLARE SECTION;
+    long nr;
+    char name[31];
+    short category;
+EXEC SQL END DECLARE SECTION;</div>
+                
+                <h3>Duomenų tipų atitikmenys</h3>
+                <div class="info-box">
+                    <ul>
+                        <li><strong>INTEGER</strong> → long</li>
+                        <li><strong>SMALLINT</strong> → short</li>
+                        <li><strong>CHAR(n)</strong> → char[n+1]</li>
+                        <li><strong>DATE</strong> → char[11]</li>
+                        <li><strong>TIME</strong> → char[9]</li>
+                    </ul>
+                </div>
+                
+                <h3>Klaidų apdorojimas</h3>
+                <div class="code-block">EXEC SQL INCLUDE SQLCA;
+
+// SQLCODE reikšmės:
+// 0 - sėkmė
+// < 0 - klaida
+// > 0 - įspėjimas (100 - nerasta įrašų)
+
+if (SQLCODE < 0)
+    printf("Klaida: %ld\n", SQLCODE);</div>
+                
+                <h3>WHENEVER sakinys</h3>
+                <div class="code-block">EXEC SQL WHENEVER SQLERROR GOTO error;
+EXEC SQL WHENEVER NOT FOUND GOTO end;
+EXEC SQL WHENEVER SQLERROR CONTINUE;</div>
+                
+                <h3>NULL reikšmių apdorojimas</h3>
+                <div class="highlight">
+                    <strong>Indikatorius</strong> - papildomas kintamasis, rodantis ar bazinis kintamasis yra NULL:
+                    <ul>
+                        <li>Neigiama reikšmė - NULL</li>
+                        <li>Neneigiama - ne NULL</li>
+                    </ul>
+                </div>
+                <div class="code-block">short value, ind;
+EXEC SQL UPDATE Vykdytojai 
+    SET Kategorija = :value INDICATOR :ind 
+    WHERE Nr = 1;
+    
+// Arba sutrumpintai:
+EXEC SQL UPDATE Vykdytojai 
+    SET Kategorija = :value :ind 
+    WHERE Nr = 1;</div>
+            </div>
+        </div>
+        
+        <div id="cursors" class="tab-content">
+            <div class="section">
+                <h2>Žymekliai (Cursors)</h2>
+                
+                <div class="key-points">
+                    <h4>Kada naudojami žymekliai?</h4>
+                    <p>Žymekliai naudojami kai SELECT sakinys grąžina daugiau nei vieną eilutę. Jie leidžia apdoroti rezultatą po vieną eilutę.</p>
+                </div>
+                
+                <h3>Žymeklio operacijos</h3>
+                <div class="info-box">
+                    <ol>
+                        <li><strong>DECLARE CURSOR</strong> - žymeklio deklaravimas</li>
+                        <li><strong>OPEN</strong> - žymeklio atidarymas</li>
+                        <li><strong>FETCH</strong> - duomenų gavimas</li>
+                        <li><strong>CLOSE</strong> - žymeklio uždarymas</li>
+                    </ol>
+                </div>
+                
+                <h3>Pavyzdys: Duomenų skaitymas</h3>
+                <div class="code-block">EXEC SQL DECLARE curs CURSOR FOR
+    SELECT Pavarde, Kategorija 
+    FROM Vykdytojai 
+    ORDER BY Pavarde;
+
+EXEC SQL OPEN curs;
+
+while (1) {
+    EXEC SQL FETCH curs INTO :name, :category:ind;
+    
+    if (SQLCODE != 0) break;
+    
+    printf("%s, ", name);
+    if (ind < 0)
+        printf("Kategorija: -\n");
+    else
+        printf("Kategorija: %d\n", category);
+}
+
+EXEC SQL CLOSE curs;</div>
+                
+                <h3>FETCH parinktys (SQL2)</h3>
+                <div class="code-block">FETCH FIRST    - pirma eilutė
+FETCH LAST     - paskutinė eilutė
+FETCH NEXT     - kita eilutė
+FETCH PRIOR    - ankstesnė eilutė
+FETCH ABSOLUTE n - n-oji eilutė
+FETCH RELATIVE n - n eilučių pirmyn/atgal</div>
+                
+                <h3>SELECT INTO (viena eilutė)</h3>
+                <div class="highlight">
+                    Kai tikimasi tik vienos eilutės rezultate, galima naudoti SELECT INTO be žymeklio:
+                </div>
+                <div class="code-block">EXEC SQL SELECT Pavarde, Kategorija
+    INTO :name, :category:ind
+    FROM Vykdytojai
+    WHERE Nr = :nr;
+
+if (SQLCODE == 100)
+    printf("Vykdytojas nerastas\n");</div>
+                
+                <h3>Atnaujinimas ir trynimas su žymekliu</h3>
+                <div class="code-block">EXEC SQL DECLARE curs CURSOR FOR
+    SELECT Pavarde FROM Vykdytojai
+    FOR UPDATE OF Kategorija;
+
+EXEC SQL OPEN curs;
+EXEC SQL FETCH curs INTO :name;
+
+// Ištrinti dabartinę eilutę
+EXEC SQL DELETE FROM Vykdytojai
+    WHERE CURRENT OF curs;
+
+// Atnaujinti dabartinę eilutę
+EXEC SQL UPDATE Vykdytojai
+    SET Kategorija = :category
+    WHERE CURRENT OF curs;
+
+EXEC SQL CLOSE curs;</div>
+                
+                <div class="warning-box">
+                    <strong>Apribojimai UPDATE/DELETE su CURRENT OF:</strong>
+                    <ul>
+                        <li>FROM sąlygoje tik viena lentelė</li>
+                        <li>Be ORDER BY</li>
+                        <li>Be DISTINCT</li>
+                        <li>Be GROUP BY</li>
+                        <li>Reikia nurodyti FOR UPDATE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="dynamic-sql" class="tab-content">
+            <div class="section">
+                <h2>Dinaminis SQL</h2>
+                
+                <div class="key-points">
+                    <h4>Kodėl reikalingas dinaminis SQL?</h4>
+                    <p>Statiniame SQL negalima parametrizuoti lentelių pavadinimų ar stulpelių. Dinaminis SQL leidžia formuoti ir vykdyti SQL sakinius programos vykdymo metu.</p>
+                </div>
+                
+                <h3>EXECUTE IMMEDIATE</h3>
+                <div class="info-box">
+                    Naudojamas SQL sakiniams be parametrų (INSERT, UPDATE, DELETE, CREATE, DROP ir kt.)
+                </div>
+                <div class="code-block">EXEC SQL BEGIN DECLARE SECTION;
+    char sqlStmt[256];
+EXEC SQL END DECLARE SECTION;
+
+strcpy(sqlStmt, "DELETE FROM Vykdytojai WHERE Nr = 1");
+EXEC SQL EXECUTE IMMEDIATE :sqlStmt;
+
+if (SQLCODE < 0)
+    printf("SQL klaida: %ld\n", SQLCODE);</div>
+                
+                <h3>PREPARE ir EXECUTE (su parametrais)</h3>
+                <div class="highlight">
+                    Kai reikia naudoti parametrus, konstantos pakeičiamos klaustukais (?), o sakinys paruošiamas su PREPARE ir vykdomas su EXECUTE.
+                </div>
+                <div class="code-block">EXEC SQL BEGIN DECLARE SECTION;
+    char sqlStmt[256];
+    short newValue, searchValue;
+EXEC SQL END DECLARE SECTION;
+
+strcpy(sqlStmt, "UPDATE Projektai SET Terminas = ? WHERE Nr = ?");
+EXEC SQL PREPARE stmt FROM :sqlStmt;
+
+while(1) {
+    scanf("%d", &searchValue);
+    scanf("%d", &newValue);
+    
+    EXEC SQL EXECUTE stmt USING :newValue, :searchValue;
+    
+    if (SQLCODE < 0) {
+        printf("Klaida: %ld\n", SQLCODE);
+        break;
+    }
+}</div>
+                
+                <h3>PREPARE su žymekliu</h3>
+                <div class="code-block">strcpy(sqlStmt, "SELECT Pavarde FROM Vykdytojai");
+strcat(sqlStmt, " WHERE Kvalifikacija = ?");
+
+EXEC SQL PREPARE s1 FROM :sqlStmt;
+EXEC SQL DECLARE c1 CURSOR FOR s1;
+
+scanf("%s", buffer);
+EXEC SQL OPEN c1 USING :buffer;
+
+do {
+    EXEC SQL FETCH c1 INTO :name;
+    if (SQLCODE != 0) break;
+    printf("%s\n", name);
+} while(1);
+
+EXEC SQL CLOSE c1;</div>
+                
+                <h3>SQLDA (SQL Description Area)</h3>
+                <div class="info-box">
+                    Naudojama kai iš anksto nežinoma, kiek stulpelių grąžins SELECT sakinys.
+                </div>
+                <div class="code-block">struct sqlda {
+    char sqldaid[8];    // 'SQLDA '
+    long sqldabc;       // SQLDA dydis
+    short sqln;         // SQLVAR elementų skaičius
+    short sqld;         // Stulpelių skaičius
+    struct sqlvar sqlvar[1];
+};
+
+struct sqlvar {
+    short sqltype;      // Duomenų tipas
+    short sqllen;       // Duomenų ilgis
+    char *sqldata;      // Rodyklė į duomenis
+    short *sqlind;      // Rodyklė į indikatorių
+    struct sqlname sqlname; // Kintamojo vardas
+};</div>
+                
+                <h3>DESCRIBE naudojimas</h3>
+                <div class="code-block">EXEC SQL PREPARE stmt FROM :sqlStmt;
+EXEC SQL DECLARE curs CURSOR FOR stmt;
+
+memset(&sqlda, 0, sizeof(sqlda));
+EXEC SQL DESCRIBE stmt INTO :sqlda;
+
+// Išskirti atmintį SQLVAR elementams
+// ...
+
+EXEC SQL OPEN curs;
+EXEC SQL FETCH curs USING DESCRIPTOR :sqlda;</div>
+            </div>
+        </div>
+        
+        <div id="jdbc" class="tab-content">
+            <div class="section">
+                <h2>JDBC (Java Database Connectivity)</h2>
+                
+                <div class="key-points">
+                    <h4>JDBC pranašumai:</h4>
+                    <ul>
+                        <li>Nereikia prekompiliuoti programos</li>
+                        <li>Objektiškai orientuota API</li>
+                        <li>Patogi programuoti Java kalba</li>
+                    </ul>
+                </div>
+                
+                <h3>Prisijungimas prie duomenų bazės</h3>
+                <div class="code-block">import java.sql.*;
+
+// 1. Užkrauti tvarkyklę
+Class.forName("org.postgresql.Driver");
+// arba: com.ibm.db2.jcc.DB2Driver
+// arba: oracle.jdbc.driver.OracleDriver
+
+// 2. Prisijungti
+Connection con = DriverManager.getConnection(
+    "jdbc:postgresql://pgsql3.mif/Darbai",
+    username,
+    password
+);</div>
+                
+                <h3>Statement</h3>
+                <div class="code-block">Statement stmt = con.createStatement();
+
+// INSERT
+stmt.executeUpdate(
+    "INSERT INTO Vykdytojai " +
+    "VALUES (6, 'Baltakis', 'Informatikas', 2, NULL)"
+);
+
+// UPDATE
+String sql = "UPDATE Vykdytojai " +
+             "SET Kategorija = Kategorija + 1";
+stmt.executeUpdate(sql);</div>
+                
+                <h3>PreparedStatement (su parametrais)</h3>
+                <div class="highlight">
+                    <strong>SVARBU:</strong> PreparedStatement apsaugo nuo SQL injekcijų!
+                </div>
+                <div class="code-block">PreparedStatement stmt = con.prepareStatement(
+    "UPDATE Vykdytojai SET Kategorija = ? WHERE Pavarde = ?"
+);
+
+stmt.setInt(1, 5);
+stmt.setString(2, "Jonaitis");
+stmt.executeUpdate();
+
+// Galima naudoti kelis kartus su skirtingais parametrais
+stmt.setInt(1, 4);
+stmt.setString(2, "Petraitis");
+stmt.executeUpdate();</div>
+                
+                <h3>ResultSet (duomenų skaitymas)</h3>
+                <div class="code-block">String name;
+int category;
+
+ResultSet rs = stmt.executeQuery(
+    "SELECT Pavarde, Kategorija FROM Vykdytojai"
+);
+
+while (rs.next()) {
+    name = rs.getString("Pavarde");
+    // arba: name = rs.getString(1);
+    
+    category = rs.getInt("Kategorija");
+    
+    System.out.println(name + " kategorija: " +
+        (rs.wasNull() ? "-" : category));
+}</div>
+                
+                <h3>ResultSet navigacija</h3>
+                <div class="code-block">rs.absolute(3);     // 3-čia eilutė
+rs.previous();       // atgal per 1
+rs.relative(2);      // pirmyn per 2
+rs.relative(-3);     // atgal per 3
+
+// Tikrinimo metodai
+rs.isFirst();
+rs.isLast();
+rs.isBeforeFirst();
+rs.isAfterLast();
+rs.getRow();         // dabartinės eilutės numeris</div>
+                
+                <h3>Transakcijų valdymas</h3>
+                <div class="code-block">try {
+    con.setAutoCommit(false);
+    
+    stmt.executeUpdate("INSERT INTO ...");
+    stmt.executeUpdate("UPDATE ...");
+    
+    con.commit();
+    con.setAutoCommit(true);
+    
+} catch (SQLException ex) {
+    System.err.println("Klaida: " + ex.getMessage());
+    con.rollback();
+    con.setAutoCommit(true);
+}</div>
+                
+                <div class="info-box">
+                    <strong>Numatytoji JDBC elgsena:</strong> po kiekvieno SQL sakinio įvykdomas COMMIT (autoCommit = true)
+                </div>
+            </div>
+        </div>
+        
+        <div id="sql-injection" class="tab-content">
+            <div class="section">
+                <h2>SQL Injekcijos</h2>
+                
+                <div class="warning-box">
+                    <h4>⚠️ SQL injekcija - vienas pavojingiausių saugumo pažeidžiamumų!</h4>
+                    <p>Leidžia piktavaliui:</p>
+                    <ul>
+                        <li>Gauti neleistiną prieigą prie duomenų</li>
+                        <li>Keisti ar trinti duomenis</li>
+                        <li>Vykdyti komandas serveryje</li>
+                        <li>Skaityti/keisti failus serveryje</li>
+                    </ul>
+                </div>
+                
+                <h3>Pavyzdys 1: OR 1=1</h3>
+                <div class="code-block">// NESAUGUS kodas:
+String userID = getInputString("VykdytojoNr");
+String sql = "SELECT * FROM Vykdytojai WHERE Nr = " + userID;
+stmt.executeQuery(sql);</div>
+                
+                <div class="highlight">
+                    <strong>Ataka:</strong> Vartotojas įveda: <code>5 OR 1=1</code><br>
+                    <strong>Rezultatas:</strong> <code>SELECT * FROM Vykdytojai WHERE Nr = 5 OR 1=1</code><br>
+                    Grąžinami VISI įrašai, nes 1=1 visada teisinga!
+                </div>
+                
+                <h3>Pavyzdys 2: Prisijungimo apeitis</h3>
+                <div class="code-block">// NESAUGUS kodas:
+String userName = getInputString("Prisijungimo vardas");
+String userPass = getInputString("Slaptažodis");
+
+String sql = "SELECT * FROM Vykdytojai " +
+             "WHERE Pavarde = '" + userName + "' " +
+             "AND Slaptazodis = '" + userPass + "'";
+
+ResultSet rs = stmt.executeQuery(sql);</div>
+                
+                <div class="highlight">
+                    <strong>Ataka:</strong><br>
+                    Vardas: <code>' or '=' </code><br>
+                    Slaptažodis: <code>' or '1'='1</code><br>
+                    <strong>Rezultatas:</strong><br>
+                    <code>SELECT * FROM Vykdytojai WHERE Pavarde = '' or ''='' AND Slaptazodis = '' or '1'='1'</code><br>
+                    Prisijungiama be slaptažodžio!
+                </div>
+                
+                <h3>Pavyzdys 3: Paketo ataka (Batch)</h3>
+                <div class="code-block">// NESAUGUS kodas:
+String userId = getRequestString("UserId");
+String sql = "UPDATE Vykdytojai " +
+             "SET Kategorija = Kategorija + 1 " +
+             "WHERE Nr = " + userId;</div>
+                
+                <div class="warning-box">
+                    <strong>Ataka:</strong> Vartotojas įveda: <code>5; DROP TABLE Vykdytojai</code><br>
+                    <strong>Rezultatas:</strong> Vykdomi du sakiniai - atnaujinimas ir lentelės ištrynimas!
+                </div>
+                
+                <h3>Antros eilės injekcijos</h3>
+                <div class="info-box">
+                    <p>Piktavalis įrašo kenksmingus duomenis į DB, kurie vėliau, kai bus naudojami kituose SQL sakiniuose, sukels žalą. Duomenys "gyvi" DB ilgai ir gali pakenkti nuolatos.</p>
+                </div>
+                
+                <h3>🛡️ Apsauga nuo SQL injekcijų</h3>
+                
+                <div class="key-points">
+                    <h4>1. PreparedStatement (Java)</h4>
+                    <div class="code-block">// SAUGUS kodas:
+String sql = "SELECT * FROM Vykdytojai " +
+             "WHERE Pavarde = ? AND Slaptazodis = ?";
+
+PreparedStatement stmt = con.prepareStatement(sql);
+stmt.setString(1, userName);
+stmt.setString(2, userPass);
+
+ResultSet rs = stmt.executeQuery();</div>
+                    <p>✅ Parametrai automatiškai ekranuojami</p>
+                </div>
+                
+                <div class="key-points">
+                    <h4>2. Baziniai kintamieji su : (C/Embedded SQL)</h4>
+                    <div class="code-block">// SAUGUS kodas:
+EXEC SQL SELECT Pavarde, Kategorija
+    INTO :name, :category
+    FROM Vykdytojai
+    WHERE Nr = :nr;</div>
+                    <p>✅ DBVS pati apdoroja parametrus saugiai</p>
+                </div>
+                
+                <div class="key-points">
+                    <h4>3. Escape sekos</h4>
+                    <div class="code-block">// Ekranuoti specialius simbolius kabutėmis
+String safe = input.replace("'", "''");
+String sql = "... WHERE Name = '" + safe + "'";</div>
+                    <p>⚠️ Mažiau patikima nei PreparedStatement</p>
+                </div>
+                
+                <div class="key-points">
+                    <h4>4. Validacija</h4>
+                    <ul>
+                        <li>Tikrinti įvesties formatą</li>
+                        <li>Naudoti whitelists (leidžiamų reikšmių sąrašus)</li>
+                        <li>Riboti įvesties ilgį</li>
+                        <li>Netikėti vartotojo įvestimi!</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <strong>Auksinė taisyklė:</strong> NIEKADA nekonstruoti SQL sakinių tiesiog sujungiant string'us su vartotojo įvestimi!
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openTab(evt, tabName) {
+            // Paslėpti visus tab-content
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Pašalinti active klasę iš visų mygtukų
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            // Parodyti pasirinktą tab ir pažymėti mygtuką
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

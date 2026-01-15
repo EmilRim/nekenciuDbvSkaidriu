@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duomenų Vientisumo Studijų Vadovas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .nav-btn.active {
+            background: white;
+            color: #fa709a;
+            border-bottom: 3px solid #fa709a;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .theory-card {
+            background: #f8f9fa;
+            border-left: 4px solid #fa709a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .theory-card h3 {
+            color: #fa709a;
+            margin-bottom: 15px;
+        }
+        
+        .theory-card ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+        
+        .theory-card li {
+            margin-bottom: 8px;
+        }
+        
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        
+        .code-box .keyword {
+            color: #ff79c6;
+            font-weight: bold;
+        }
+        
+        .code-box .string {
+            color: #50fa7b;
+        }
+        
+        .code-box .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+        
+        .example-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #fa709a;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .quiz-question h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .option {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            border-color: #fa709a;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .key-term {
+            color: #fa709a;
+            font-weight: 600;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Duomenų Vientisumo Vadovas</h1>
+            <p>Reikalavimai, raktai, trigeriai ir transakcijos</p>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection(0)">Reikalavimai</button>
+            <button class="nav-btn" onclick="showSection(1)">Raktai</button>
+            <button class="nav-btn" onclick="showSection(2)">Išoriniai Raktai</button>
+            <button class="nav-btn" onclick="showSection(3)">Trigeriai</button>
+            <button class="nav-btn" onclick="showSection(4)">Transakcijos</button>
+            <button class="nav-btn" onclick="showSection(5)">Quiz</button>
+        </div>
+        
+        <div class="content">
+            <!-- Section 1: Reikalavimai -->
+            <div class="section active">
+                <h2 style="margin-bottom: 20px;">Reikalavimai Duomenų Vientisumui</h2>
+                
+                <div class="theory-card">
+                    <h3>Kas yra duomenų vientisumas?</h3>
+                    <p><span class="key-term">Duomenų vientisumas</span> siejamas su informacijos, esančios DB, <span class="highlight">teisingumu ir išsamumu</span>.</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>RDBVS užtikrinami reikalavimai</h3>
+                    <ul>
+                        <li><strong>Reikšmių būtinumas</strong> (NOT NULL)</li>
+                        <li><strong>Numatytoji reikšmė</strong> (DEFAULT)</li>
+                        <li><strong>Reikalavimai stulpeliams</strong> (CHECK)</li>
+                        <li><strong>Lentelės raktų vientisumas</strong> (PRIMARY KEY, UNIQUE)</li>
+                        <li><strong>Nuorodų vientisumas</strong> (FOREIGN KEY)</li>
+                        <li><strong>Dalykinės taisyklės</strong> (trigeriai)</li>
+                        <li><strong>Duomenų neprieštaringumas</strong> (transakcijos)</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>CHECK reikalavimai</h3>
+                    <p>Reikalavimai reikšmėms – tai sąlygos stulpelių reikšmėms</p>
+                    
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Vykdytojai 
+<span class="keyword">ADD CONSTRAINT</span> GerosKategorijos 
+  <span class="keyword">CHECK</span> (Kategorija <span class="keyword">BETWEEN</span> 1 <span class="keyword">AND</span> 6)
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Svarbu:</strong> Jei lentelėje jau yra duomenų, netenkinančių reikalavimo, reikalavimo apibrėžimas baigiasi klaida
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Reikalavimo ištrynimas:</strong></p>
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Vykdytojai 
+<span class="keyword">DROP CONSTRAINT</span> GerosKategorijos
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>CHECK su keliais stulpeliais</h3>
+                    <div class="code-box">
+<span class="keyword">CREATE TABLE</span> Projektai (
+  Nr <span class="keyword">INTEGER NOT NULL CHECK</span> (Nr >= 0),
+  Pavadinimas <span class="keyword">VARCHAR</span>(254) <span class="keyword">NOT NULL</span>,
+  Svarba <span class="keyword">CHAR</span>(10) 
+    <span class="keyword">CHECK</span> (Svarba <span class="keyword">IN</span> (<span class="string">'Maža'</span>,<span class="string">'Vidutinė'</span>,<span class="string">'Didelė'</span>))
+    <span class="keyword">DEFAULT</span> <span class="string">'Vidutinė'</span>,
+  Trukmė <span class="keyword">SMALLINT CHECK</span> (Trukmė > 0),
+  <span class="keyword">CONSTRAINT</span> TrumpųjSvarba 
+    <span class="keyword">CHECK</span> (Trukmė > 6 <span class="keyword">OR</span> Svarba = <span class="string">'Didelė'</span>)
+)
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>✓ Geroji praktika:</strong> Rekomenduojama suteikti reikalavimams vardus – taip juos galima lengvai keisti vėliau
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>CHECK apribojimai</h3>
+                    <ul>
+                        <li>CHECK reikalavimai turi būti užtikrinami <span class="highlight">visada</span></li>
+                        <li>CHECK sąlygoje negalima naudoti vardines konstantas, kurios kinta laike</li>
+                        <li>Negalima: <code>CHECK(Pradžia > CURRENT_DATE - INTERVAL '1 MONTH')</code></li>
+                    </ul>
+                    
+                    <div class="warning-box">
+                        <strong>DEFAULT vs CHECK:</strong><br>
+                        • DEFAULT reikšmė taikoma <strong>tik įvedant</strong> duomenis<br>
+                        • CHECK sąlyga turi būti tenkinama <strong>visą laiką</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 2: Raktai -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Lentelės Raktų Vientisumas</h2>
+                
+                <div class="theory-card">
+                    <h3>Pirminis raktas (PRIMARY KEY)</h3>
+                    <p>Pirminis raktas užtikrina, kad kiekviena eilutė lentelėje yra unikali</p>
+                    
+                    <div class="code-box">
+<span class="comment">-- Pridėjimas prie egzistuojančios lentelės:</span>
+<span class="keyword">ALTER TABLE</span> Vykdytojai <span class="keyword">ADD PRIMARY KEY</span> (Nr)
+
+<span class="comment">-- Sudėtinis pirminis raktas:</span>
+<span class="keyword">ALTER TABLE</span> Vykdymas 
+<span class="keyword">ADD PRIMARY KEY</span> (Projektas, Vykdytojas)
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Kuriant lentelę:</strong></p>
+                    <div class="code-box">
+<span class="keyword">CREATE TABLE</span> Projektai (
+  Nr <span class="keyword">INTEGER NOT NULL</span>,
+  Pavadinimas <span class="keyword">VARCHAR</span>(254) <span class="keyword">NOT NULL</span>,
+  ...,
+  <span class="keyword">PRIMARY KEY</span> (Nr)
+)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kiti raktai (UNIQUE)</h3>
+                    <p>Kitus (ne pirminius) raktus galima užtikrinti unikaliuoju indeksu arba UNIQUE apribojimu</p>
+                    
+                    <div class="code-box">
+<span class="comment">-- Unikaliuoju indeksu:</span>
+<span class="keyword">CREATE UNIQUE INDEX</span> Raktas_Pavadinimas 
+  <span class="keyword">ON</span> Projektai(Pavadinimas)
+
+<span class="comment">-- UNIQUE apribojimu:</span>
+Pavadinimas <span class="keyword">VARCHAR</span>(254) <span class="keyword">NOT NULL UNIQUE</span>
+
+<span class="comment">-- Arba:</span>
+<span class="keyword">CONSTRAINT</span> Raktas2 <span class="keyword">UNIQUE</span> (Pavadinimas)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Automatinis reikšmių parinkimas</h3>
+                    <p>Dirbtiniams raktams galima nurodyti automatinio reikšmių parinkimo taisyklę</p>
+                    
+                    <div class="code-box">
+<span class="keyword">GENERATED</span> {<span class="keyword">ALWAYS</span> | <span class="keyword">BY DEFAULT</span>} 
+  <span class="keyword">AS IDENTITY</span> 
+  [(<span class="keyword">START WITH</span> &lt;skaičius&gt; 
+    <span class="keyword">INCREMENT BY</span> &lt;skaičius&gt;)]
+                    </div>
+                    
+                    <ul style="margin-top: 15px;">
+                        <li><strong>ALWAYS</strong> – reikšmė generuojama visada</li>
+                        <li><strong>BY DEFAULT</strong> – reikšmė priskiriama tik, kai INSERT sakinyje nenurodyta reikšmė</li>
+                        <li><strong>START WITH</strong> – pradinė reikšmė</li>
+                        <li><strong>INCREMENT BY</strong> – aritmetinės progresijos skirtumas</li>
+                    </ul>
+                    
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong>
+                        <div class="code-box">
+Nr <span class="keyword">INTEGER NOT NULL PRIMARY KEY</span> 
+  <span class="keyword">GENERATED ALWAYS AS IDENTITY</span> 
+  (<span class="keyword">START WITH</span> 100 <span class="keyword">INCREMENT BY</span> 1)
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>DBVS specifinės savybės</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>DBVS</th>
+                            <th>Automatinio parinkimo sintaksė</th>
+                        </tr>
+                        <tr>
+                            <td>SQL standartas</td>
+                            <td>GENERATED AS IDENTITY</td>
+                        </tr>
+                        <tr>
+                            <td>MS SQL Server</td>
+                            <td>IDENTITY (pradinė, prieaugis)</td>
+                        </tr>
+                        <tr>
+                            <td>PostgreSQL <10</td>
+                            <td>SERIAL tipas</td>
+                        </tr>
+                        <tr>
+                            <td>PostgreSQL ≥10</td>
+                            <td>GENERATED AS IDENTITY</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Section 3: Išoriniai Raktai -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Išoriniai Raktai ir Nuorodų Vientisumas</h2>
+                
+                <div class="theory-card">
+                    <h3>E.F. Codd nuorodų vientisumo taisyklė</h3>
+                    <div class="success-box">
+                        "Reliacinėje DB kiekvienai išorinio rakto reikšmei, jei tik ji nėra NULL reikšmė, turi egzistuoti atitinkama pirminio rakto reikšmė"
+                    </div>
+                    
+                    <p style="margin-top: 15px;">Pirminis ir išorinis raktai apibrėžia ryšį tarp dviejų lentelių:</p>
+                    <ul>
+                        <li><strong>Pagrindinė lentelė</strong> ("tėvas")</li>
+                        <li><strong>Priklausoma lentelė</strong> ("vaikas", kategorijų lentelė)</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Veiksmai, galintys pažeisti nuorodų vientisumą</h3>
+                    
+                    <p><strong>DBVS užtikrina automatiškai (be naudotojo įsikišimo):</strong></p>
+                    <ul>
+                        <li>✓ Naujos priklausomos eilutės ("vaiko") įterpimas</li>
+                        <li>✓ Išorinio rakto atnaujinimas priklausomoje eilutje</li>
+                    </ul>
+                    
+                    <p style="margin-top: 15px;"><strong>Naudotojas gali įtakoti DBVS elgesį:</strong></p>
+                    <ul>
+                        <li>⚙️ Pagrindinės ("tėvinės") eilutės ištrynimas</li>
+                        <li>⚙️ Pirminio rakto atnaujinimas pagrindinėje eilutėje</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>4 taisyklės trinant/atnaujinant pagrindinę eilutę</h3>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Taisyklė</th>
+                            <th>Trynimas (ON DELETE)</th>
+                            <th>Atnaujinimas (ON UPDATE)</th>
+                        </tr>
+                        <tr>
+                            <td><strong>RESTRICT / NO ACTION</strong></td>
+                            <td>Uždrausti trynimą, jei "tėvas turi vaikų"</td>
+                            <td>Uždrausti keitimą, jei "tėvas turi vaikų"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CASCADE</strong></td>
+                            <td>Pašalinti visas priklausomas eilutes</td>
+                            <td>Pakeisti visas priklausomas eilutes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SET NULL</strong></td>
+                            <td>Priklausomose eilutėse išoriniam raktui priskirti NULL</td>
+                            <td>Priklausomose eilutėse išoriniam raktui priskirti NULL</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SET DEFAULT</strong></td>
+                            <td>Priklausomose eilutėse išoriniam raktui priskirti DEFAULT reikšmę</td>
+                            <td>Priklausomose eilutėse išoriniam raktui priskirti DEFAULT reikšmę</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Išorinio rakto apibrėžimas</h3>
+                    
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Vykdymas 
+<span class="keyword">ADD CONSTRAINT</span> Vykdytojus 
+<span class="keyword">FOREIGN KEY</span> (Vykdytojas) 
+<span class="keyword">REFERENCES</span> Vykdytojai 
+  <span class="keyword">ON DELETE CASCADE</span> 
+  <span class="keyword">ON UPDATE RESTRICT</span>
+                    </div>
+                    
+                    <div class="example-box">
+                        <strong>Reikšmė:</strong> Šis išorinis raktas reiškia:<br>
+                        • Ištrynus vykdytoją – automatiškai ištrinamos visos jo užduotys (CASCADE)<br>
+                        • Keičiant vykdytojo Nr – operacija uždraudžiama, jei jis turi užduočių (RESTRICT)
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>Išorinio rakto sunaikinimas:</strong></p>
+                    <div class="code-box">
+<span class="keyword">ALTER TABLE</span> Vykdymas 
+<span class="keyword">DROP CONSTRAINT</span> Vykdytojus
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Trigeriai -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Dalykinės Taisyklės ir Trigeriai</h2>
+                
+                <div class="theory-card">
+                    <h3>Kas yra dalykinės taisyklės?</h3>
+                    <p>Dalykinės taisyklės – reikalavimai, susiję su konkreios organizacijos darbo tvarka:</p>
+                    <ul>
+                        <li>Darbuotojas negali dalyvauti daugiau nei 3 projektuose</li>
+                        <li>Darbuotojas negali vadovauti daugiau nei 1 projektui</li>
+                        <li>Projektas negali būti pradėtas anksčiau nei prieš mėnesį</li>
+                    </ul>
+                    
+                    <div class="success-box">
+                        <strong>DBVS užtikrinamos ECA taisyklės:</strong><br>
+                        <span class="key-term">Event-Condition-Action</span> (Įvykis – Sąlyga – Veiksmas)
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Kas yra trigeris?</h3>
+                    <p><span class="key-term">Trigeris</span> – mechanizmas dalykinėms taisyklėms užtikrinti:</p>
+                    <ul>
+                        <li>Su kiekvienu duomenų atnaujinimo įvykiu (INSERT, UPDATE, DELETE) susiejamas veiksmas</li>
+                        <li>DBVS vykdo apibrėžtąjį veiksmą kiekvieną kartą įvykiui atsitikus</li>
+                        <li>Galima apibrėžti papildomą sąlygą veiksmams atlikti</li>
+                    </ul>
+                    
+                    <div class="warning-box">
+                        <strong>📜 Istorija:</strong> Dalykinių taisyklių užtikrinimo reikalingumas pagrįstas 1976 m. straipsnyje (IBM). Pradėtos diegti po 10 metų trigerio pavadinimu.
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Trigerio sudedamosios dalys</h3>
+                    <p>Kuriant trigerį (CREATE TRIGGER) nurodoma:</p>
+                    
+                    <ul>
+                        <li><strong>Trigerio vardas</strong></li>
+                        <li><strong>Lentelė</strong>, su kuria siejamas trigeris</li>
+                        <li><strong>Įvykis</strong>: INSERT, UPDATE, DELETE</li>
+                        <li><strong>Momentas</strong>: BEFORE (prieš) arba AFTER (po) atnaujinimo</li>
+                        <li><strong>Dažnis</strong>: 
+                            <ul>
+                                <li>FOR EACH STATEMENT – vieną kartą sakiniui</li>
+                                <li>FOR EACH ROW – kiekvienai eilutei</li>
+                            </ul>
+                        </li>
+                        <li><strong>Kamienas</strong> – SQL sakiniai, kuriuos vykdyti</li>
+                        <li><strong>Sąlyga (WHEN)</strong> – kada vykdyti kamieną</li>
+                    </ul>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Trigerio sintaksė (SQL standartas)</h3>
+                    
+                    <div class="code-box">
+<span class="keyword">CREATE TRIGGER</span> &lt;trigerio vardas&gt; 
+&lt;momentas&gt; &lt;įvykis&gt; <span class="keyword">ON</span> &lt;lentelės vardas&gt; 
+[<span class="keyword">REFERENCING</span> [<span class="keyword">NEW AS</span> &lt;vardas&gt;] 
+              [<span class="keyword">OLD AS</span> &lt;vardas&gt;]] 
+&lt;dažnis&gt; 
+[<span class="keyword">WHEN</span> (&lt;paieškos sąlyga&gt;)] 
+&lt;veiksmas&gt;
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Pastaba:</strong> Standartizuotas SQL:1999, bet daugelis DBVS turi savitą dialektą
+                    </div>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>OLD ir NEW</h3>
+                    <ul>
+                        <li><strong>NEW</strong> – naujoji eilutės būsena (po INSERT/UPDATE)</li>
+                        <li><strong>OLD</strong> – senoji eilutės būsena (prieš UPDATE/DELETE)</li>
+                    </ul>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Operacija</th>
+                            <th>OLD</th>
+                            <th>NEW</th>
+                        </tr>
+                        <tr>
+                            <td>INSERT</td>
+                            <td>-</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>UPDATE</td>
+                            <td>✓</td>
+                            <td>✓</td>
+                        </tr>
+                        <tr>
+                            <td>DELETE</td>
+                            <td>✓</td>
+                            <td>-</td>
+                        </tr>
+                    </table>
+                </div> <!-- theory-card -->
+
+                                <div class="theory-card">
+                    <h3>Trigerių naudojimo rekomendacijos</h3>
+                    <ul>
+                        <li>Trigerius naudokite tik tada, kai taisyklės <span class="highlight">negalima</span> realizuoti su CHECK ar FOREIGN KEY</li>
+                        <li>Venkite sudėtingos verslo logikos trigeriuose</li>
+                        <li>Trigeriai apsunkina testavimą ir klaidų paiešką</li>
+                        <li>Visada dokumentuokite trigerio paskirtį</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Rizika:</strong> Netinkamai sukurti trigeriai gali sukelti
+                        ciklinius atnaujinimus arba stipriai sulėtinti DB darbą
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Transakcijos -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Transakcijos ir Duomenų Neprieštaringumas</h2>
+
+                <div class="theory-card">
+                    <h3>Kas yra transakcija?</h3>
+                    <p>
+                        <span class="key-term">Transakcija</span> – tai logiškai susijusių DB operacijų seka,
+                        kuri turi būti įvykdyta <span class="highlight">visa arba neįvykdyta visai</span>.
+                    </p>
+                </div>
+
+                <div class="theory-card">
+                    <h3>ACID savybės</h3>
+                    <ul>
+                        <li><strong>Atomicity</strong> – viskas arba nieko</li>
+                        <li><strong>Consistency</strong> – po transakcijos DB lieka teisingoje būsenoje</li>
+                        <li><strong>Isolation</strong> – transakcijos viena kitos nemato</li>
+                        <li><strong>Durability</strong> – patvirtinti pakeitimai neišnyksta</li>
+                    </ul>
+                </div>
+                <div class="theory-card">
+                    <h3>Transakcijų valdymo komandos</h3>
+
+                    <div class="code-box">
+<span class="keyword">BEGIN</span>;
+
+<span class="comment">-- SQL operacijos</span>
+
+<span class="keyword">COMMIT</span>;
+                    </div>
+
+                    <div class="code-box">
+<span class="keyword">BEGIN</span>;
+
+<span class="comment">-- SQL operacijos</span>
+
+<span class="keyword">ROLLBACK</span>;
+                    </div>
+
+                    <div class="example-box">
+                        <strong>Pavyzdys:</strong> Jei viena operacija nepavyksta –
+                        visa transakcija atšaukiama (ROLLBACK)
+                    </div>
+                </div>
+
+                <div class="theory-card">
+                    <h3>Izoliacijos lygiai</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Lygis</th>
+                            <th>Aprašymas</th>
+                        </tr>
+                        <tr>
+                            <td>READ UNCOMMITTED</td>
+                            <td>Leidžia „nešvarius“ skaitymus</td>
+                        </tr>
+                        <tr>
+                            <td>READ COMMITTED</td>
+                            <td>Skaitomi tik patvirtinti duomenys</td>
+                        </tr>
+                        <tr>
+                            <td>REPEATABLE READ</td>
+                            <td>Garantija, kad skaityti duomenys nepasikeis</td>
+                        </tr>
+                        <tr>
+                            <td>SERIALIZABLE</td>
+                            <td>Griežčiausias – transakcijos vykdomos tarsi nuosekliai</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <!-- Section 6: Quiz -->
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Savikontrolės Quiz</h2>
+
+                <div class="quiz-question">
+                    <h4>1. Kuri savybė užtikrina, kad transakcija bus įvykdyta visa arba neįvykdyta visai?</h4>
+                    <div class="option">Consistency</div>
+                    <div class="option correct">Atomicity</div>
+                    <div class="option">Isolation</div>
+                    <div class="option">Durability</div>
+                </div>
+
+                <div class="quiz-question">
+                    <h4>2. Kuris mechanizmas labiausiai tinka nuorodų vientisumui?</h4>
+                    <div class="option">CHECK</div>
+                    <div class="option correct">FOREIGN KEY</div>
+                    <div class="option">TRIGGER</div>
+                    <div class="option">DEFAULT</div>
+                </div>
+
+                <div class="success-box">
+                    <strong>🎉 Sveikiname!</strong> Jei supranti visas šio vadovo dalis –
+                    esi pasiruošęs DB vientisumo temai.
+                </div>
+            </div>
+
+        </div> <!-- content -->
+    </div> <!-- container -->
+
+<script>
+function showSection(index) {
+    const sections = document.querySelectorAll('.section');
+    const buttons = document.querySelectorAll('.nav-btn');
+
+    sections.forEach(s => s.classList.remove('active'));
+    buttons.forEach(b => b.classList.remove('active'));
+
+    sections[index].classList.add('active');
+    buttons[index].classList.add('active');
+}
+</script>
+
+</body>
+</html>
